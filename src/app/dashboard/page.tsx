@@ -5,6 +5,7 @@ import { Shield, AlertTriangle, TrendingUp, Eye, Zap, Mail, Trash2, Clock, Chevr
 import RiskOverview from '@/components/dashboard/RiskOverview'
 import MitigationSimulator from '@/components/dashboard/MitigationSimulator'
 import DeletionCenter from '@/components/deletion/DeletionCenter'
+import GeminiChatWidget from '@/components/ui/GeminiChatWidget'
 import { getPrivacyLawProfile, type ResidencyState } from '@/lib/us-privacy-laws'
 
 export default function DashboardPage() {
@@ -278,6 +279,7 @@ export default function DashboardPage() {
         scanId={result.scanId}
         userState={userState}
       />
+      <GeminiChatWidget />
     </div>
   )
 }

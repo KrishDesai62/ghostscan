@@ -1,20 +1,7 @@
 {
-  "/_not-found": "app/_not-found.js",
-  "/api/deletion-requests/[id]/route": "app/api/deletion-requests/[id]/route.js",
-  "/api/deletion-requests/route": "app/api/deletion-requests/route.js",
-  "/api/auth/otp/verify/route": "app/api/auth/otp/verify/route.js",
-  "/api/auth/otp/send/route": "app/api/auth/otp/send/route.js",
-  "/api/password-check/route": "app/api/password-check/route.js",
-  "/api/scan-preview/route": "app/api/scan-preview/route.js",
-  "/api/internal/purge-expired/route": "app/api/internal/purge-expired/route.js",
-  "/api/scans/[id]/legal/route": "app/api/scans/[id]/legal/route.js",
-  "/api/scans/route": "app/api/scans/route.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/api/legal-assist/route": "app/api/legal-assist/route.js",
-  "/api/screenshot-check/route": "app/api/screenshot-check/route.js",
   "/checker/page": "app/checker/page.js",
-  "/report/page": "app/report/page.js",
-  "/page": "app/page.js",
-  "/verify/page": "app/verify/page.js",
-  "/password-checker/page": "app/password-checker/page.js"
+  "/password-checker/page": "app/password-checker/page.js",
+  "/api/chat/gemini/route": "app/api/chat/gemini/route.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/report/page": "app/report/page.js"
 }

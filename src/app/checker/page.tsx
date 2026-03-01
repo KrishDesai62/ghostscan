@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation'
 import { Eye, ArrowLeft, AlertTriangle } from 'lucide-react'
 import ScreenshotChecker from '@/components/dashboard/ScreenshotChecker'
+import GeminiChatWidget from '@/components/ui/GeminiChatWidget'
 
 export default function CheckerPage() {
   const router = useRouter()
@@ -32,6 +33,7 @@ export default function CheckerPage() {
         </div>
         <ScreenshotChecker />
       </main>
+      <GeminiChatWidget />
     </div>
   )
 }

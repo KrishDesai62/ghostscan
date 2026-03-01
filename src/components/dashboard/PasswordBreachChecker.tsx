@@ -6,7 +6,6 @@ interface PasswordCheckResult {
   breached: boolean
   breachCount: number
   risk: 'low' | 'elevated' | 'medium' | 'high'
-  note: string
 }
 
 export default function PasswordBreachChecker() {
@@ -111,8 +110,6 @@ export default function PasswordBreachChecker() {
               <div className="font-mono mt-0.5 text-gray-200">{result.breachCount.toLocaleString()}</div>
             </div>
           </div>
-
-          <p className="text-xs text-gray-500">{result.note}</p>
         </div>
       )}
     </div>
