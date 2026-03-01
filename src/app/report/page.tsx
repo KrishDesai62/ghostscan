@@ -79,10 +79,10 @@ export default function ReportPage() {
 
   const { scoreBundle, breaches, velocity, trend, analytics, timeSeries, graphData } = result
   const printDimensions = [
-    { key: 'Takeover', value: scoreBundle?.dimensions?.takeover ?? 0, color: '#7b4f2c' },
-    { key: 'Theft', value: scoreBundle?.dimensions?.theft ?? 0, color: '#355c7d' },
-    { key: 'Phishing', value: scoreBundle?.dimensions?.phishing ?? 0, color: '#6c8a64' },
-    { key: 'Exposure', value: scoreBundle?.dimensions?.exposure ?? 0, color: '#a67b5b' },
+    { key: 'Takeover', value: scoreBundle?.dimensions?.takeover ?? 0, color: '#dc2626' },
+    { key: 'Theft', value: scoreBundle?.dimensions?.theft ?? 0, color: '#ea580c' },
+    { key: 'Phishing', value: scoreBundle?.dimensions?.phishing ?? 0, color: '#ca8a04' },
+    { key: 'Exposure', value: scoreBundle?.dimensions?.exposure ?? 0, color: '#6b7280' },
   ]
   const yearlyMap: Record<string, number> = {}
   ;(breaches || []).forEach((b: any) => {
@@ -127,11 +127,18 @@ export default function ReportPage() {
 
       {/* original main spacing: py-6 space-y-4 */}
       <main className="max-w-7xl mx-auto px-4 py-7 space-y-5">
-        <div className="hidden print:block border border-[#d7d2c8] bg-white p-4 text-[#111827]">
-          <h1 className="text-base font-semibold">GhostScan Summary Report</h1>
-          <p className="text-[11px] text-[#6b7280] font-mono mt-0.5">{email || 'Unknown email'}</p>
+        <div className="hidden print:block print-report border border-gray-200 bg-[#faf9f7] p-6 text-[#1a1a1a]">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h1 className="text-lg font-bold text-[#1a1a1a]">GhostScan Summary Report</h1>
+              <p className="text-xs text-[#6b7280] font-mono mt-0.5">{email || 'Unknown email'}</p>
+            </div>
+            <div className="w-8 h-8 rounded-lg bg-[#dc2626] flex items-center justify-center">
+              <Eye className="w-4 h-4 text-white" />
+            </div>
+          </div>
 
-          <div className="grid grid-cols-5 gap-2 mt-3">
+          <div className="grid grid-cols-5 gap-3 mb-5">
             <PrintMetric label="Score" value={String(scoreBundle?.finalScore ?? 0)} />
             <PrintMetric label="Level" value={String(scoreBundle?.level ?? 'unknown').toUpperCase()} />
             <PrintMetric label="Breaches" value={String(breaches?.length ?? 0)} />
@@ -139,87 +146,95 @@ export default function ReportPage() {
             <PrintMetric label="Trend" value={String(trend || 'stable').toUpperCase()} />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mt-3 text-[11px] leading-[1.35]">
-            <div>
-              <div className="font-semibold mb-1">Risk Dimensions</div>
-              <ul className="space-y-0.5 text-[#374151]">
-                <li>Takeover: <span className="font-mono">{scoreBundle?.dimensions?.takeover ?? 0}</span></li>
-                <li>Identity Theft: <span className="font-mono">{scoreBundle?.dimensions?.theft ?? 0}</span></li>
-                <li>Phishing: <span className="font-mono">{scoreBundle?.dimensions?.phishing ?? 0}</span></li>
-                <li>Exposure: <span className="font-mono">{scoreBundle?.dimensions?.exposure ?? 0}</span></li>
+          <div className="grid grid-cols-2 gap-6 mb-5 text-xs leading-relaxed">
+            <div className="bg-white/80 border border-gray-200 rounded-xl p-4">
+              <div className="font-semibold mb-2 text-[#1a1a1a]">Risk Dimensions</div>
+              <ul className="space-y-1 text-[#374151]">
+                <li>Takeover: <span className="font-mono font-semibold">{scoreBundle?.dimensions?.takeover ?? 0}</span></li>
+                <li>Identity Theft: <span className="font-mono font-semibold">{scoreBundle?.dimensions?.theft ?? 0}</span></li>
+                <li>Phishing: <span className="font-mono font-semibold">{scoreBundle?.dimensions?.phishing ?? 0}</span></li>
+                <li>Exposure: <span className="font-mono font-semibold">{scoreBundle?.dimensions?.exposure ?? 0}</span></li>
               </ul>
             </div>
-            <div>
-              <div className="font-semibold mb-1">Time-Series</div>
-              <ul className="space-y-0.5 text-[#374151]">
-                <li>Avg interval: <span className="font-mono">{timeSeries?.averageIntervalMonths ? `${timeSeries.averageIntervalMonths.toFixed(1)} mo` : 'N/A'}</span></li>
-                <li>Next window: <span className="font-mono">{analytics?.expectedWindow ? `${analytics.expectedWindow.min}-${analytics.expectedWindow.max} mo` : 'N/A'}</span></li>
-                <li>Momentum: <span className="font-mono">{analytics?.momentumScore ?? 0}/100</span></li>
-                <li>Forecast 12M: <span className="font-mono">{timeSeries?.forecastNext12Months ?? 0}</span></li>
+            <div className="bg-white/80 border border-gray-200 rounded-xl p-4">
+              <div className="font-semibold mb-2 text-[#1a1a1a]">Time-Series</div>
+              <ul className="space-y-1 text-[#374151]">
+                <li>Avg interval: <span className="font-mono font-semibold">{timeSeries?.averageIntervalMonths ? `${timeSeries.averageIntervalMonths.toFixed(1)} mo` : 'N/A'}</span></li>
+                <li>Next window: <span className="font-mono font-semibold">{analytics?.expectedWindow ? `${analytics.expectedWindow.min}-${analytics.expectedWindow.max} mo` : 'N/A'}</span></li>
+                <li>Momentum: <span className="font-mono font-semibold">{analytics?.momentumScore ?? 0}/100</span></li>
+                <li>Forecast 12M: <span className="font-mono font-semibold">{timeSeries?.forecastNext12Months ?? 0}</span></li>
               </ul>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mt-3 text-[10px]">
-            <div>
-              <div className="font-semibold text-[10px] mb-1 text-[#374151]">Mini Graph: Risk Profile</div>
-              <div className="space-y-1">
+          <div className="grid grid-cols-2 gap-6 mb-5">
+            <div className="bg-white/80 border border-gray-200 rounded-xl p-4">
+              <div className="font-semibold text-xs mb-2 text-[#1a1a1a]">Mini Graph: Risk Profile</div>
+              <div className="space-y-1.5">
                 {printDimensions.map((d) => (
-                  <div key={d.key} className="flex items-center gap-1.5">
-                    <span className="w-12 text-[#6b7280]">{d.key}</span>
-                    <div className="flex-1 h-2 bg-[#ece6db] border border-[#d7d2c8] overflow-hidden">
-                      <div className="h-full" style={{ width: `${Math.max(2, Math.min(100, d.value))}%`, backgroundColor: d.color }} />
+                  <div key={d.key} className="flex items-center gap-2">
+                    <span className="w-14 text-[#6b7280] text-xs">{d.key}</span>
+                    <div className="flex-1 h-2.5 bg-gray-100 border border-gray-200 rounded overflow-hidden">
+                      <div className="h-full rounded" style={{ width: `${Math.max(2, Math.min(100, d.value))}%`, backgroundColor: d.color }} />
                     </div>
-                    <span className="w-6 text-right font-mono text-[#374151]">{d.value}</span>
+                    <span className="w-6 text-right font-mono font-semibold text-[#1a1a1a] text-xs">{d.value}</span>
                   </div>
                 ))}
               </div>
             </div>
-            <div>
-              <div className="font-semibold text-[10px] mb-1 text-[#374151]">Mini Graph: Yearly Breach Trend</div>
-              <div className="h-[48px] border border-[#d7d2c8] bg-[#fbfaf7] px-1 py-1 flex items-end gap-1">
+            <div className="bg-white/80 border border-gray-200 rounded-xl p-4">
+              <div className="font-semibold text-xs mb-2 text-[#1a1a1a]">Mini Graph: Yearly Breach Trend</div>
+              <div className="h-12 border border-gray-200 bg-gray-50 rounded px-2 py-2 flex items-end gap-1">
                 {printYearly.length === 0 ? (
-                  <div className="text-[9px] text-[#6b7280]">No timeline data</div>
+                  <div className="text-xs text-[#6b7280]">No timeline data</div>
                 ) : (
                   printYearly.map((d) => (
                     <div key={d.year} className="flex-1 flex flex-col items-center justify-end gap-0.5">
                       <div
-                        className="w-full bg-[#355c7d]"
-                        style={{ height: `${Math.max(3, Math.round((d.count / maxYearly) * 34))}px` }}
+                        className="w-full bg-[#dc2626] rounded-t"
+                        style={{ height: `${Math.max(4, Math.round((d.count / maxYearly) * 36))}px` }}
                       />
-                      <span className="text-[8px] text-[#6b7280] leading-none">{d.year.slice(-2)}</span>
+                      <span className="text-[10px] text-[#6b7280] leading-none">{d.year.slice(-2)}</span>
                     </div>
                   ))
                 )}
               </div>
-              <div className="mt-0.5 text-[9px] text-[#6b7280]">
-                Forecast 12M: <span className="font-mono">{timeSeries?.forecastNext12Months ?? 0}</span>
+              <div className="mt-1.5 text-xs text-[#6b7280]">
+                Forecast 12M: <span className="font-mono font-semibold text-[#1a1a1a]">{timeSeries?.forecastNext12Months ?? 0}</span>
               </div>
             </div>
           </div>
 
-          <div className="mt-2.5 border border-[#d7d2c8] bg-[#fbfaf7] p-2.5 text-[9px] leading-[1.35] text-[#4b5563]">
-            <div className="font-semibold text-[10px] text-[#374151] mb-1">Model Summary (Core Equations)</div>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
-              <div>
-                Final Score:
-                <span className="font-mono"> 0.35*Takeover + 0.25*Theft + 0.20*Phishing + 0.20*Exposure</span>
+          <div className="mt-4 bg-white/90 border border-gray-200 rounded-xl p-5">
+            <div className="font-semibold text-sm text-[#1a1a1a] mb-3">Model Summary (Core Equations)</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="border-l-2 border-[#dc2626] pl-4 py-1">
+                <div className="text-[10px] uppercase tracking-wider text-[#6b7280] mb-0.5">Final Score</div>
+                <div className="text-xs font-mono text-[#1a1a1a] leading-relaxed">
+                  0.35 × Takeover + 0.25 × Theft + 0.20 × Phishing + 0.20 × Exposure
+                </div>
               </div>
-              <div>
-                Velocity:
-                <span className="font-mono"> breachCount / activeYears</span>
+              <div className="border-l-2 border-[#dc2626] pl-4 py-1">
+                <div className="text-[10px] uppercase tracking-wider text-[#6b7280] mb-0.5">Velocity</div>
+                <div className="text-xs font-mono text-[#1a1a1a] leading-relaxed">
+                  breachCount ÷ activeYears
+                </div>
               </div>
-              <div>
-                Momentum:
-                <span className="font-mono"> clamp(round(min(velocity*18,70)+trendBonus+recencyBonus), 0..100)</span>
+              <div className="border-l-2 border-[#dc2626] pl-4 py-1 sm:col-span-2">
+                <div className="text-[10px] uppercase tracking-wider text-[#6b7280] mb-0.5">Momentum</div>
+                <div className="text-xs font-mono text-[#1a1a1a] leading-relaxed">
+                  clamp(round(min(velocity×18, 70) + trendBonus + recencyBonus), 0..100)
+                </div>
               </div>
-              <div>
-                Next Breach Window:
-                <span className="font-mono"> center=avgInterval*trendMultiplier; range=0.75x..1.25x</span>
+              <div className="border-l-2 border-[#dc2626] pl-4 py-1 sm:col-span-2">
+                <div className="text-[10px] uppercase tracking-wider text-[#6b7280] mb-0.5">Next Breach Window</div>
+                <div className="text-xs font-mono text-[#1a1a1a] leading-relaxed">
+                  center = avgInterval × trendMultiplier; range = 0.75× .. 1.25×
+                </div>
               </div>
             </div>
-            <div className="mt-1 text-[8.5px] text-[#6b7280]">
-              trendBonus: +20 increasing, 0 stable, -10 declining | recencyBonus: +12 (&le;18m), +6 (&le;36m), else 0
+            <div className="mt-3 pt-3 border-t border-gray-200 text-[10px] text-[#6b7280] leading-relaxed">
+              <span className="font-medium text-[#1a1a1a]">Parameters:</span> trendBonus = +20 (increasing), 0 (stable), −10 (declining) · recencyBonus = +12 (≤18m), +6 (≤36m), else 0
             </div>
           </div>
         </div>
@@ -388,11 +403,16 @@ export default function ReportPage() {
         @media print {
           @page {
             size: A4 portrait;
-            margin: 8mm;
+            margin: 10mm;
           }
           html, body {
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+            background: #faf9f7 !important;
+          }
+          .print-report {
+            min-height: 277mm;
+            width: 100%;
           }
         }
       `}</style>
@@ -411,9 +431,9 @@ function Metric({ label, value }: { label: string; value: string }) {
 
 function PrintMetric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="border border-[#d7d2c8] px-2 py-1.5">
-      <div className="text-[10px] text-[#6b7280]">{label}</div>
-      <div className="text-xs font-semibold font-mono text-[#111827] mt-0.5">{value}</div>
+    <div className="border border-gray-200 bg-white/80 rounded-lg px-3 py-2">
+      <div className="text-[10px] text-[#6b7280] uppercase tracking-wider">{label}</div>
+      <div className="text-sm font-bold font-mono text-[#1a1a1a] mt-0.5">{value}</div>
     </div>
   )
 }

@@ -17,18 +17,16 @@ export default function ReportRadarChart({ dimensions }: Props) {
     <ResponsiveContainer width="100%" height={270}>
       <RechartRadar data={data} cx="50%" cy="50%" outerRadius="76%">
         {/* original stroke from shared chart: #1e2d45 */}
-        <PolarGrid stroke="#c8c2b8" />
+        <PolarGrid stroke="#e5e7eb" />
         <PolarAngleAxis
           dataKey="subject"
-          /* original tick: fill #6b7280, fontSize 11, Space Mono */
           tick={{ fill: '#4b5563', fontSize: 11, fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' }}
         />
         <Radar
           name="Risk"
           dataKey="value"
-          /* original stroke/fill: #ff3b5c */
-          stroke="#7b4f2c"
-          fill="#7b4f2c"
+          stroke="#dc2626"
+          fill="#dc2626"
           fillOpacity={0.2}
           strokeWidth={2}
         />

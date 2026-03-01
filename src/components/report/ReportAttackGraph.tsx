@@ -5,8 +5,7 @@ interface Node { id: string; label: string; type: 'email' | 'breach' | 'data_cla
 interface Edge { source: string; target: string; label?: string }
 interface Props { graphData: { nodes: Node[]; edges: Edge[] } }
 
-/* original node palette in shared graph: email #00ff9d, breach #ff3b5c, data_class #4cc9f0 */
-const NODE_COLORS = { email: '#355c7d', breach: '#7b4f2c', data_class: '#6c8a64' }
+const NODE_COLORS = { email: '#1e40af', breach: '#dc2626', data_class: '#6b7280' }
 const NODE_RADIUS = { email: 24, breach: 18, data_class: 12 }
 
 export default function ReportAttackGraph({ graphData }: Props) {
@@ -48,8 +47,7 @@ export default function ReportAttackGraph({ graphData }: Props) {
       const c = ctx as CanvasRenderingContext2D
       c.clearRect(0, 0, W, H)
 
-      /* original background fill from shared graph: #0e1421 */
-      c.fillStyle = '#f7f2e8'
+      c.fillStyle = '#faf9f7'
       c.fillRect(0, 0, W, H)
 
       edges.forEach((e) => {
@@ -59,8 +57,7 @@ export default function ReportAttackGraph({ graphData }: Props) {
         c.beginPath()
         c.moveTo(s.x, s.y)
         c.lineTo(t.x, t.y)
-        /* original edge colors: #ff3b5c44 and #4cc9f044 */
-        c.strokeStyle = e.label === 'Leaked In' ? '#7b4f2c55' : '#6c8a6455'
+        c.strokeStyle = e.label === 'Leaked In' ? '#dc262655' : '#6b728055'
         c.lineWidth = 1
         c.stroke()
       })
@@ -87,8 +84,7 @@ export default function ReportAttackGraph({ graphData }: Props) {
         c.lineWidth = 1.2
         c.stroke()
 
-        /* original email label color: #00ff9d, others #ffffff99 */
-        c.fillStyle = n.type === 'email' ? '#355c7d' : '#4b5563'
+        c.fillStyle = n.type === 'email' ? '#1e40af' : '#4b5563'
         c.font = `${n.type === 'email' ? 700 : 500} ${n.type === 'data_class' ? 9 : 11}px ui-monospace, SFMono-Regular, Menlo, monospace`
         c.textAlign = 'center'
         c.textBaseline = 'middle'
@@ -103,12 +99,11 @@ export default function ReportAttackGraph({ graphData }: Props) {
   return (
     <div className="relative">
       <div className="flex items-center gap-5 mb-3 text-xs font-mono text-[#4b5563]">
-        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#355c7d] inline-block" />Your Email</span>
-        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#7b4f2c] inline-block" />Breached Service</span>
-        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#6c8a64] inline-block" />Data Class</span>
+        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#1e40af] inline-block" />Your Email</span>
+        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#dc2626] inline-block" />Breached Service</span>
+        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#6b7280] inline-block" />Data Class</span>
       </div>
-      {/* original class from shared graph canvas: rounded-lg */}
-      <canvas ref={canvasRef} className="w-full rounded-sm border border-[#d7d2c8]" style={{ height: 360 }} />
+      <canvas ref={canvasRef} className="w-full rounded-sm border border-gray-200" style={{ height: 360 }} />
     </div>
   )
 }

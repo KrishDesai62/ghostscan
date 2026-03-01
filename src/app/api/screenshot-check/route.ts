@@ -69,10 +69,17 @@ function rulesFromText(inputText?: string, sourceOverride?: string) {
   };
 }
 
+const MAX_IMAGE_SIZE = 4 * 1024 * 1024; // 4MB - skip AI vision if larger
+
 export async function POST(req: NextRequest) {
   let body;
   try {
-    body = Schema.parse(await req.json());
+    const raw = await req.json();
+    body = Schema.parse(raw);
+    // Skip sending huge base64 images to avoid timeouts/memory issues
+    if (body.imageDataUrl && body.imageDataUrl.length > MAX_IMAGE_SIZE) {
+      body = { ...body, imageDataUrl: undefined };
+    }
   } catch {
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
   }
@@ -80,6 +87,7 @@ export async function POST(req: NextRequest) {
   const apiKey = process.env.OPENAI_API_KEY;
   const combinedText = [body.hintText, body.extractedText].filter(Boolean).join('\n');
   const fallbackSource = body.extractedText ? 'ocr_rules' : 'heuristic_fallback';
+
   if (!apiKey) {
     return NextResponse.json(rulesFromText(combinedText, fallbackSource));
   }
@@ -133,15 +141,16 @@ export async function POST(req: NextRequest) {
     }
 
     const payload = await response.json();
-    const raw = payload?.choices?.[0]?.message?.content || '';
-    const parsed = parseModelJson(raw);
+    const rawContent = payload?.choices?.[0]?.message?.content || '';
+    const parsed = parseModelJson(rawContent);
 
     if (!parsed) {
       return NextResponse.json(rulesFromText(combinedText, fallbackSource));
     }
 
     return NextResponse.json({ ...parsed, source: 'ai_vision' });
-  } catch {
+  } catch (err) {
+    console.warn('[screenshot-check] AI analysis failed, using fallback:', err);
     return NextResponse.json(rulesFromText(combinedText, fallbackSource));
   }
 }
