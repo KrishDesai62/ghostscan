@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Shield, AlertTriangle, TrendingUp, Eye, Zap, Mail, Trash2, Clock, ChevronRight, ShieldCheck, Info } from 'lucide-react'
+import { Shield, AlertTriangle, TrendingUp, Eye, Zap, Mail, Trash2, Clock, ChevronRight, ShieldCheck, Info, KeyRound, FileText } from 'lucide-react'
 import RiskOverview from '@/components/dashboard/RiskOverview'
 import RadarChart from '@/components/dashboard/RadarChart'
 import TimelineChart from '@/components/dashboard/TimelineChart'
@@ -100,6 +100,18 @@ export default function DashboardPage() {
               className="gs-btn-ghost text-sm py-2 px-3"
             >
               Scam Checker
+            </button>
+            <button
+              onClick={() => router.push('/password-checker')}
+              className="gs-btn-ghost text-sm py-2 px-3 flex items-center gap-1.5"
+            >
+              <KeyRound className="w-3.5 h-3.5" /> Password Checker
+            </button>
+            <button
+              onClick={() => router.push('/report')}
+              className="gs-btn-ghost text-sm py-2 px-3 flex items-center gap-1.5"
+            >
+              <FileText className="w-3.5 h-3.5" /> Summary Report
             </button>
             <button
               onClick={() => setShowDeletion(true)}
