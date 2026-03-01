@@ -1,0 +1,56 @@
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[931],{5531:function(e,t,a){"use strict";a.d(t,{Z:function(){return o}});var s=a(2265);/**
+ * @license lucide-react v0.396.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let r=e=>e.replace(/([a-z0-9])([A-Z])/g,"$1-$2").toLowerCase(),n=(...e)=>e.filter((e,t,a)=>!!e&&a.indexOf(e)===t).join(" ");/**
+ * @license lucide-react v0.396.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */var l={xmlns:"http://www.w3.org/2000/svg",width:24,height:24,viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:2,strokeLinecap:"round",strokeLinejoin:"round"};/**
+ * @license lucide-react v0.396.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let i=(0,s.forwardRef)(({color:e="currentColor",size:t=24,strokeWidth:a=2,absoluteStrokeWidth:r,className:i="",children:o,iconNode:c,...d},x)=>(0,s.createElement)("svg",{ref:x,...l,width:t,height:t,stroke:e,strokeWidth:r?24*Number(a)/Number(t):a,className:n("lucide",i),...d},[...c.map(([e,t])=>(0,s.createElement)(e,t)),...Array.isArray(o)?o:[o]])),o=(e,t)=>{let a=(0,s.forwardRef)(({className:a,...l},o)=>(0,s.createElement)(i,{ref:o,iconNode:t,className:n(`lucide-${r(e)}`,a),...l}));return a.displayName=`${e}`,a}},7158:function(e,t,a){"use strict";a.d(t,{Z:function(){return s}});/**
+ * @license lucide-react v0.396.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let s=(0,a(5531).Z)("ChevronRight",[["path",{d:"m9 18 6-6-6-6",key:"mthhwq"}]])},9670:function(e,t,a){"use strict";a.d(t,{Z:function(){return s}});/**
+ * @license lucide-react v0.396.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let s=(0,a(5531).Z)("Eye",[["path",{d:"M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z",key:"rwhkz3"}],["circle",{cx:"12",cy:"12",r:"3",key:"1v7zrd"}]])},5589:function(e,t,a){"use strict";a.d(t,{Z:function(){return s}});/**
+ * @license lucide-react v0.396.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let s=(0,a(5531).Z)("Lock",[["rect",{width:"18",height:"11",x:"3",y:"11",rx:"2",ry:"2",key:"1w4ew1"}],["path",{d:"M7 11V7a5 5 0 0 1 10 0v4",key:"fwvmzm"}]])},1295:function(e,t,a){"use strict";a.d(t,{Z:function(){return s}});/**
+ * @license lucide-react v0.396.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let s=(0,a(5531).Z)("Mail",[["rect",{width:"20",height:"16",x:"2",y:"4",rx:"2",key:"18n3k1"}],["path",{d:"m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7",key:"1ocrg3"}]])},9036:function(e,t,a){"use strict";a.d(t,{Z:function(){return s}});/**
+ * @license lucide-react v0.396.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let s=(0,a(5531).Z)("Shield",[["path",{d:"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",key:"oel41y"}]])},4631:function(e,t,a){"use strict";a.d(t,{Z:function(){return s}});/**
+ * @license lucide-react v0.396.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let s=(0,a(5531).Z)("TriangleAlert",[["path",{d:"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3",key:"wmoenq"}],["path",{d:"M12 9v4",key:"juzpu7"}],["path",{d:"M12 17h.01",key:"p32p05"}]])},2369:function(e,t,a){"use strict";a.d(t,{Z:function(){return s}});/**
+ * @license lucide-react v0.396.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let s=(0,a(5531).Z)("Zap",[["path",{d:"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z",key:"1xq2db"}]])},4756:function(e,t,a){Promise.resolve().then(a.bind(a,2100))},2100:function(e,t,a){"use strict";a.r(t),a.d(t,{default:function(){return p}});var s=a(7437),r=a(2265),n=a(4033),l=a(9036);/**
+ * @license lucide-react v0.396.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let i=(0,a(5531).Z)("Database",[["ellipse",{cx:"12",cy:"5",rx:"9",ry:"3",key:"msslwz"}],["path",{d:"M3 5V19A9 3 0 0 0 21 19V5",key:"1wlel7"}],["path",{d:"M3 12A9 3 0 0 0 21 12",key:"mv7ke4"}]]);var o=a(1295),c=a(2369),d=a(9670),x=a(5589),m=a(7158),u=a(4631);let f=[{value:"14B+",label:"Records breached"},{value:"47",label:"Data brokers tracked"},{value:"3",label:"Legal templates"},{value:"<2min",label:"Full scan time"}],h=[{icon:l.Z,title:"Verified Identity",desc:"Email OTP + liveness check ensures only you can access your report"},{icon:i,title:"Breach Intelligence",desc:"Cross-references HIBP's database of 14B+ leaked credentials"},{icon:o.Z,title:"Data Removal Center",desc:"Pre-filled GDPR/CCPA deletion emails for 47 brokers + every breach"},{icon:c.Z,title:"Risk Simulation",desc:"See exactly how much each mitigation action reduces your score"}];function p(){let e=(0,n.useRouter)(),[t,a]=(0,r.useState)(""),[l,i]=(0,r.useState)(!1);return(0,s.jsxs)("main",{className:"min-h-screen grid-bg relative overflow-hidden",children:[(0,s.jsx)("div",{className:"absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#00ff9d08] rounded-full blur-3xl pointer-events-none"}),(0,s.jsx)("div",{className:"absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#4cc9f008] rounded-full blur-3xl pointer-events-none"}),(0,s.jsxs)("nav",{className:"relative z-10 flex items-center justify-between px-8 py-5 border-b border-[#1e2d45]",children:[(0,s.jsxs)("div",{className:"flex items-center gap-2",children:[(0,s.jsx)("div",{className:"w-8 h-8 bg-[#00ff9d] rounded-lg flex items-center justify-center",children:(0,s.jsx)(d.Z,{className:"w-4 h-4 text-[#080b12]"})}),(0,s.jsxs)("span",{className:"font-bold text-lg tracking-tight",children:["Ghost",(0,s.jsx)("span",{className:"text-[#00ff9d]",children:"Scan"})]})]}),(0,s.jsxs)("div",{className:"flex items-center gap-3 text-sm text-gray-500",children:[(0,s.jsx)(x.Z,{className:"w-3.5 h-3.5"}),(0,s.jsx)("span",{children:"No data stored without consent"})]})]}),(0,s.jsxs)("div",{className:"relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-16 text-center",children:[(0,s.jsxs)("div",{className:"inline-flex items-center gap-2 bg-[#00ff9d11] border border-[#00ff9d33] rounded-full px-4 py-1.5 mb-8 text-sm text-[#00ff9d] font-mono",children:[(0,s.jsx)("span",{className:"w-1.5 h-1.5 bg-[#00ff9d] rounded-full animate-pulse"}),"Hackathon Demo \xb7 HIBP + GDPR/CCPA Engine"]}),(0,s.jsxs)("h1",{className:"text-5xl md:text-7xl font-extrabold leading-[1.05] tracking-tight mb-6",children:["Know What They Know",(0,s.jsx)("br",{}),(0,s.jsx)("span",{className:"text-[#00ff9d]",children:"Take It Back"})]}),(0,s.jsx)("p",{className:"text-gray-400 text-xl max-w-2xl mx-auto mb-12 leading-relaxed",children:"Scan your email against 14B+ breached records, compute your risk score, and send legally-sound deletion requests to every company holding your data — in under 2 minutes."}),(0,s.jsx)("form",{onSubmit:function(a){a.preventDefault();let s=t?"?email=".concat(encodeURIComponent(t)):"";e.push("/verify".concat(s))},className:"max-w-lg mx-auto mb-6",children:(0,s.jsxs)("div",{className:"flex items-center bg-[#0e1421] border rounded-xl overflow-hidden transition-all duration-200 ".concat(l?"border-[#00ff9d55] shadow-[0_0_20px_#00ff9d22]":"border-[#1e2d45]"),children:[(0,s.jsx)(o.Z,{className:"w-4 h-4 text-gray-500 ml-4 flex-shrink-0"}),(0,s.jsx)("input",{type:"email",placeholder:"your@email.com",value:t,onChange:e=>a(e.target.value),onFocus:()=>i(!0),onBlur:()=>i(!1),className:"flex-1 bg-transparent px-3 py-4 text-white placeholder:text-gray-600 outline-none font-mono text-sm"}),(0,s.jsxs)("button",{type:"submit",className:"m-1 gs-btn-primary flex items-center gap-2 py-3 whitespace-nowrap",children:["Analyze Exposure",(0,s.jsx)(m.Z,{className:"w-4 h-4"})]})]})}),(0,s.jsx)("p",{className:"text-xs text-gray-600 font-mono",children:"OTP-verified \xb7 No passwords stored \xb7 Delete anytime \xb7 GDPR/CCPA compliant"}),(0,s.jsx)("div",{className:"grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-3xl mx-auto",children:f.map(e=>(0,s.jsxs)("div",{className:"gs-card p-4 text-center",children:[(0,s.jsx)("div",{className:"text-2xl font-extrabold text-[#00ff9d] font-mono",children:e.value}),(0,s.jsx)("div",{className:"text-xs text-gray-500 mt-1",children:e.label})]},e.value))})]}),(0,s.jsxs)("div",{className:"relative z-10 max-w-5xl mx-auto px-6 pb-20",children:[(0,s.jsx)("div",{className:"grid md:grid-cols-2 gap-4",children:h.map((e,t)=>(0,s.jsxs)("div",{className:"gs-card p-5 flex gap-4 hover:border-[#1e3a5f] transition-colors",children:[(0,s.jsx)("div",{className:"w-10 h-10 bg-[#00ff9d11] rounded-lg flex items-center justify-center flex-shrink-0",children:(0,s.jsx)(e.icon,{className:"w-5 h-5 text-[#00ff9d]"})}),(0,s.jsxs)("div",{children:[(0,s.jsx)("div",{className:"font-semibold text-white mb-1",children:e.title}),(0,s.jsx)("div",{className:"text-sm text-gray-500 leading-relaxed",children:e.desc})]})]},e.title))}),(0,s.jsxs)("div",{className:"mt-8 gs-card border-[#ffd16633] p-4 flex items-start gap-3",children:[(0,s.jsx)(u.Z,{className:"w-4 h-4 text-[#ffd166] mt-0.5 flex-shrink-0"}),(0,s.jsxs)("p",{className:"text-xs text-gray-500 leading-relaxed",children:[(0,s.jsx)("span",{className:"text-[#ffd166] font-semibold",children:"Demo Mode: "}),"Without a HIBP API key, GhostScan returns realistic mock breach data for demonstration. Legal templates are informational only and do not constitute legal advice. Set ",(0,s.jsx)("code",{className:"font-mono text-gray-400 bg-[#1e2d45] px-1 rounded",children:"HIBP_API_KEY"})," in .env.local for live data."]})]})]})]})}},622:function(e,t,a){"use strict";var s=a(2265),r=Symbol.for("react.element"),n=Symbol.for("react.fragment"),l=Object.prototype.hasOwnProperty,i=s.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,o={key:!0,ref:!0,__self:!0,__source:!0};function c(e,t,a){var s,n={},c=null,d=null;for(s in void 0!==a&&(c=""+a),void 0!==t.key&&(c=""+t.key),void 0!==t.ref&&(d=t.ref),t)l.call(t,s)&&!o.hasOwnProperty(s)&&(n[s]=t[s]);if(e&&e.defaultProps)for(s in t=e.defaultProps)void 0===n[s]&&(n[s]=t[s]);return{$$typeof:r,type:e,key:c,ref:d,props:n,_owner:i.current}}t.Fragment=n,t.jsx=c,t.jsxs=c},7437:function(e,t,a){"use strict";e.exports=a(622)},4033:function(e,t,a){e.exports=a(5313)}},function(e){e.O(0,[971,938,744],function(){return e(e.s=4756)}),_N_E=e.O()}]);
