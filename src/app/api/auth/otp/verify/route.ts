@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const TokenSchema = z.object({
   email: z.string().email(),
-  token: z.string().length(6),
+  token: z.string().regex(/^\d{6,8}$/),
 });
 
 function getSupabaseServerClient() {

@@ -21,7 +21,7 @@ const SCAN_STEPS = [
   { id: 'render',   label: 'Generating report' },
 ]
 
-const DEMO_OTP = '123456'
+const DEMO_OTP = '12345678'
 const LIVENESS_FLOW: Array<{ stage: LivenessStage; expected: 'left' | 'center' | 'right'; label: string }> = [
   { stage: 'center_1', expected: 'center', label: 'Look at camera and hold for 1 second' },
   { stage: 'left', expected: 'left', label: 'Move head left and hold for 1 second' },
@@ -293,10 +293,10 @@ export default function VerifyPage() {
 
       const payload = await res.json().catch(() => null)
       setOtpMode('demo')
-      setOtpError(payload?.error ? `${payload.error} Use demo code 123456 for now.` : 'Could not send OTP right now. Use demo code 123456 for now.')
+      setOtpError(payload?.error ? `${payload.error} Use demo code 12345678 for now.` : 'Could not send OTP right now. Use demo code 12345678 for now.')
     } catch {
       setOtpMode('demo')
-      setOtpError('Could not send OTP right now. Use demo code 123456 for now.')
+      setOtpError('Could not send OTP right now. Use demo code 12345678 for now.')
     } finally {
       setOtpSending(false)
     }
@@ -329,13 +329,13 @@ export default function VerifyPage() {
       }
     }
 
-    if (otp === DEMO_OTP || otp.length === 6) {
+    if (otp === DEMO_OTP || otp.length === 6 || otp.length === 8) {
       setOtpVerified(true)
       setStep('consent')
       return
     }
 
-    setOtpError('Invalid code. Use 123456 for demo mode.')
+    setOtpError('Invalid code. Use 12345678 for demo mode.')
   }
 
   function handleConsentSubmit() {
@@ -459,19 +459,19 @@ export default function VerifyPage() {
           <div className="gs-card p-8 animate-fadeInUp">
             <ShieldCheck className="w-10 h-10 text-[#00ff9d] mb-4" />
             <h2 className="text-2xl font-bold mb-1">Verify Your Email</h2>
-            <p className="text-gray-400 text-sm mb-1">Enter the 6-digit code sent to</p>
+            <p className="text-gray-400 text-sm mb-1">Enter the OTP code sent to</p>
             <p className="text-[#00ff9d] font-mono text-sm mb-6">{email}</p>
             <div className="bg-[#ffd16611] border border-[#ffd16633] rounded-lg p-3 mb-5 text-xs text-[#ffd166] font-mono">
               {otpMode === 'server'
-                ? '📨 Using Supabase OTP. Enter the 6-digit code from your email.'
-                : <>🎭 Demo mode fallback: use code <strong>123456</strong></>}
+                ? '📨 Using Supabase OTP. Enter the 8-digit code from your email.'
+                : <>🎭 Demo mode fallback: use code <strong>12345678</strong></>}
             </div>
             <form onSubmit={handleOtpSubmit} className="space-y-4">
               <input
-                type="text" maxLength={6} autoFocus
-                placeholder="000000"
+                type="text" maxLength={8} autoFocus
+                placeholder="00000000"
                 value={otp}
-                onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 8))}
                 className="w-full bg-[#080b12] border border-[#1e2d45] rounded-lg px-4 py-3 font-mono text-2xl text-center tracking-[0.4em] focus:outline-none focus:border-[#00ff9d55] transition-colors"
               />
               {otpError && <p className="text-[#ff3b5c] text-xs font-mono">{otpError}</p>}
