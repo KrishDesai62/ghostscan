@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Eye, KeyRound } from 'lucide-react'
 import PasswordBreachChecker from '@/components/dashboard/PasswordBreachChecker'
+import GeminiChatWidget from '@/components/ui/GeminiChatWidget'
 
 export default function PasswordCheckerPage() {
   const router = useRouter()
@@ -32,6 +33,7 @@ export default function PasswordCheckerPage() {
         </div>
         <PasswordBreachChecker />
       </main>
+      <GeminiChatWidget />
     </div>
   )
 }

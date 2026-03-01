@@ -6,13 +6,13 @@ import { Shield, AlertTriangle, TrendingUp, Eye, Zap, Mail, Trash2, Clock, Chevr
 import RiskOverview from '@/components/dashboard/RiskOverview'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { AnimatedStagger, AnimatedStaggerItem } from '@/components/ui/AnimatedStagger'
-import { TiltCard } from '@/components/ui/TiltCard'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import RadarChart from '@/components/dashboard/RadarChart'
 import TimelineChart from '@/components/dashboard/TimelineChart'
 import AttackGraph from '@/components/dashboard/AttackGraph'
 import MitigationSimulator from '@/components/dashboard/MitigationSimulator'
 import DeletionCenter from '@/components/deletion/DeletionCenter'
+import GeminiChatWidget from '@/components/ui/GeminiChatWidget'
 import { getPrivacyLawProfile, type ResidencyState } from '@/lib/us-privacy-laws'
 import { DATA_BROKERS } from '@/lib/data-brokers'
 
@@ -23,8 +23,8 @@ export default function DashboardPage() {
   const [email, setEmail] = useState('')
   const [verified, setVerified] = useState(false)
   const [showDeletion, setShowDeletion] = useState(false)
-  const [activeTab, setActiveTab] = useState<'overview' | 'graph' | 'simulate'>('overview')
   const [userState, setUserState] = useState('US_OTHER')
+  const [activeTab, setActiveTab] = useState<'overview' | 'graph' | 'simulate'>('overview')
   const simulatorRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -275,6 +275,7 @@ export default function DashboardPage() {
       </div>
 
       <DeletionCenter open={showDeletion} onClose={() => setShowDeletion(false)} email={email} breaches={breaches} scanId={result.scanId} userState={userState} />
+      <GeminiChatWidget />
     </div>
   )
 }

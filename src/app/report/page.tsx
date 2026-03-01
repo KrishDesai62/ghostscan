@@ -2,10 +2,21 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, BarChart3, Eye, FileDown, Info } from 'lucide-react'
-import RadarChart from '@/components/dashboard/RadarChart'
-import TimelineChart from '@/components/dashboard/TimelineChart'
-import AttackGraph from '@/components/dashboard/AttackGraph'
+import ReportRadarChart from '@/components/report/ReportRadarChart'
+import ReportTimelineChart from '@/components/report/ReportTimelineChart'
+import ReportAttackGraph from '@/components/report/ReportAttackGraph'
 import TimeSeriesAnalysisChart from '@/components/dashboard/TimeSeriesAnalysisChart'
+import GeminiChatWidget from '@/components/ui/GeminiChatWidget'
+
+/*
+  Revert notes (original values before this styling pass):
+  - page wrapper: min-h-screen grid-bg
+  - header border/bg: border-[#1e2d45] bg-[#080b12]/90
+  - logo chip: bg-[#00ff9d], accent text #00ff9d
+  - card primitives: gs-card with uniform radius/shadow
+  - metric card text: label text-gray-500, value text-white
+  - chart imports: dashboard RadarChart / TimelineChart / AttackGraph (neon palette)
+*/
 
 export default function ReportPage() {
   const router = useRouter()
@@ -67,6 +78,24 @@ export default function ReportPage() {
   }
 
   const { scoreBundle, breaches, velocity, trend, analytics, timeSeries, graphData } = result
+  const printDimensions = [
+    { key: 'Takeover', value: scoreBundle?.dimensions?.takeover ?? 0, color: '#7b4f2c' },
+    { key: 'Theft', value: scoreBundle?.dimensions?.theft ?? 0, color: '#355c7d' },
+    { key: 'Phishing', value: scoreBundle?.dimensions?.phishing ?? 0, color: '#6c8a64' },
+    { key: 'Exposure', value: scoreBundle?.dimensions?.exposure ?? 0, color: '#a67b5b' },
+  ]
+  const yearlyMap: Record<string, number> = {}
+  ;(breaches || []).forEach((b: any) => {
+    if (!b?.breach_date) return
+    const y = String(new Date(b.breach_date).getFullYear())
+    if (!y || y === 'NaN') return
+    yearlyMap[y] = (yearlyMap[y] || 0) + 1
+  })
+  const printYearly = Object.entries(yearlyMap)
+    .sort(([a], [b]) => Number(a) - Number(b))
+    .slice(-6)
+    .map(([year, count]) => ({ year, count }))
+  const maxYearly = Math.max(1, ...printYearly.map((d) => d.count))
 
   return (
     <div className="min-h-screen grid-bg">
@@ -80,17 +109,122 @@ export default function ReportPage() {
             <span className="hidden md:block text-[var(--text-muted)] text-sm font-mono">| Summary Report</span>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={() => window.print()} className="gs-btn-ghost text-sm py-1.5 px-3 flex items-center gap-1.5">
+            <button
+              onClick={() => window.print()}
+              className="text-sm py-1.5 px-3 flex items-center gap-1.5 rounded-md border border-[#c7c1b6] text-[#334155] hover:bg-[#eee7da] transition-colors"
+            >
               <FileDown className="w-3.5 h-3.5" /> Print / Save PDF
             </button>
-            <button onClick={() => router.push('/dashboard')} className="gs-btn-ghost text-sm py-1.5 px-3 flex items-center gap-1.5">
+            <button
+              onClick={() => router.push('/dashboard')}
+              className="text-sm py-1.5 px-3 flex items-center gap-1.5 rounded-md border border-[#c7c1b6] text-[#334155] hover:bg-[#eee7da] transition-colors"
+            >
               <ArrowLeft className="w-3.5 h-3.5" /> Back
             </button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-6 space-y-4">
+      {/* original main spacing: py-6 space-y-4 */}
+      <main className="max-w-7xl mx-auto px-4 py-7 space-y-5">
+        <div className="hidden print:block border border-[#d7d2c8] bg-white p-4 text-[#111827]">
+          <h1 className="text-base font-semibold">GhostScan Summary Report</h1>
+          <p className="text-[11px] text-[#6b7280] font-mono mt-0.5">{email || 'Unknown email'}</p>
+
+          <div className="grid grid-cols-5 gap-2 mt-3">
+            <PrintMetric label="Score" value={String(scoreBundle?.finalScore ?? 0)} />
+            <PrintMetric label="Level" value={String(scoreBundle?.level ?? 'unknown').toUpperCase()} />
+            <PrintMetric label="Breaches" value={String(breaches?.length ?? 0)} />
+            <PrintMetric label="Velocity" value={Number.parseFloat(velocity || '0').toFixed(2)} />
+            <PrintMetric label="Trend" value={String(trend || 'stable').toUpperCase()} />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mt-3 text-[11px] leading-[1.35]">
+            <div>
+              <div className="font-semibold mb-1">Risk Dimensions</div>
+              <ul className="space-y-0.5 text-[#374151]">
+                <li>Takeover: <span className="font-mono">{scoreBundle?.dimensions?.takeover ?? 0}</span></li>
+                <li>Identity Theft: <span className="font-mono">{scoreBundle?.dimensions?.theft ?? 0}</span></li>
+                <li>Phishing: <span className="font-mono">{scoreBundle?.dimensions?.phishing ?? 0}</span></li>
+                <li>Exposure: <span className="font-mono">{scoreBundle?.dimensions?.exposure ?? 0}</span></li>
+              </ul>
+            </div>
+            <div>
+              <div className="font-semibold mb-1">Time-Series</div>
+              <ul className="space-y-0.5 text-[#374151]">
+                <li>Avg interval: <span className="font-mono">{timeSeries?.averageIntervalMonths ? `${timeSeries.averageIntervalMonths.toFixed(1)} mo` : 'N/A'}</span></li>
+                <li>Next window: <span className="font-mono">{analytics?.expectedWindow ? `${analytics.expectedWindow.min}-${analytics.expectedWindow.max} mo` : 'N/A'}</span></li>
+                <li>Momentum: <span className="font-mono">{analytics?.momentumScore ?? 0}/100</span></li>
+                <li>Forecast 12M: <span className="font-mono">{timeSeries?.forecastNext12Months ?? 0}</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mt-3 text-[10px]">
+            <div>
+              <div className="font-semibold text-[10px] mb-1 text-[#374151]">Mini Graph: Risk Profile</div>
+              <div className="space-y-1">
+                {printDimensions.map((d) => (
+                  <div key={d.key} className="flex items-center gap-1.5">
+                    <span className="w-12 text-[#6b7280]">{d.key}</span>
+                    <div className="flex-1 h-2 bg-[#ece6db] border border-[#d7d2c8] overflow-hidden">
+                      <div className="h-full" style={{ width: `${Math.max(2, Math.min(100, d.value))}%`, backgroundColor: d.color }} />
+                    </div>
+                    <span className="w-6 text-right font-mono text-[#374151]">{d.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div className="font-semibold text-[10px] mb-1 text-[#374151]">Mini Graph: Yearly Breach Trend</div>
+              <div className="h-[48px] border border-[#d7d2c8] bg-[#fbfaf7] px-1 py-1 flex items-end gap-1">
+                {printYearly.length === 0 ? (
+                  <div className="text-[9px] text-[#6b7280]">No timeline data</div>
+                ) : (
+                  printYearly.map((d) => (
+                    <div key={d.year} className="flex-1 flex flex-col items-center justify-end gap-0.5">
+                      <div
+                        className="w-full bg-[#355c7d]"
+                        style={{ height: `${Math.max(3, Math.round((d.count / maxYearly) * 34))}px` }}
+                      />
+                      <span className="text-[8px] text-[#6b7280] leading-none">{d.year.slice(-2)}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+              <div className="mt-0.5 text-[9px] text-[#6b7280]">
+                Forecast 12M: <span className="font-mono">{timeSeries?.forecastNext12Months ?? 0}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-2.5 border border-[#d7d2c8] bg-[#fbfaf7] p-2.5 text-[9px] leading-[1.35] text-[#4b5563]">
+            <div className="font-semibold text-[10px] text-[#374151] mb-1">Model Summary (Core Equations)</div>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
+              <div>
+                Final Score:
+                <span className="font-mono"> 0.35*Takeover + 0.25*Theft + 0.20*Phishing + 0.20*Exposure</span>
+              </div>
+              <div>
+                Velocity:
+                <span className="font-mono"> breachCount / activeYears</span>
+              </div>
+              <div>
+                Momentum:
+                <span className="font-mono"> clamp(round(min(velocity*18,70)+trendBonus+recencyBonus), 0..100)</span>
+              </div>
+              <div>
+                Next Breach Window:
+                <span className="font-mono"> center=avgInterval*trendMultiplier; range=0.75x..1.25x</span>
+              </div>
+            </div>
+            <div className="mt-1 text-[8.5px] text-[#6b7280]">
+              trendBonus: +20 increasing, 0 stable, -10 declining | recencyBonus: +12 (&le;18m), +6 (&le;36m), else 0
+            </div>
+          </div>
+        </div>
+
+        <div className="print:hidden space-y-5">
         <div className="gs-card p-5">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div>
@@ -119,14 +253,15 @@ export default function ReportPage() {
             </div>
             <button
               onClick={() => setShowScoreGuide((v) => !v)}
-              className="gs-btn-ghost text-sm py-2 px-3 flex items-center gap-1.5"
+              className="text-[0.82rem] py-1.5 px-3 flex items-center gap-1.5 rounded-sm border border-[#c7c1b6] text-[#334155] hover:bg-[#eee7da] transition-colors tracking-[0.01em]"
             >
               <Info className="w-3.5 h-3.5" />
               {showScoreGuide ? 'Hide Score Explanations' : 'Explain Scores'}
             </button>
           </div>
+          {/* original explanation grid: gap-2 mt-3 */}
           {showScoreGuide && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2.5">
               {scoreGuide.map((item) => (
                 <div key={item.title} className="bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] rounded p-3">
                   <div className="text-sm font-semibold">{item.title}</div>
@@ -143,14 +278,14 @@ export default function ReportPage() {
             <div className="text-sm font-semibold text-[var(--text-muted)] mb-3 flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-blue-500" /> Key Graph: Risk Dimensions
             </div>
-            <RadarChart dimensions={scoreBundle?.dimensions} />
+            <ReportRadarChart dimensions={scoreBundle?.dimensions} />
           </div>
 
           <div className="gs-card p-5">
             <div className="text-sm font-semibold text-[var(--text-muted)] mb-3 flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-[var(--accent)]" /> Key Graph: Breach Timeline
             </div>
-            <TimelineChart breaches={breaches || []} />
+            <ReportTimelineChart breaches={breaches || []} />
           </div>
         </div>
 
@@ -169,7 +304,7 @@ export default function ReportPage() {
             <BarChart3 className="w-4 h-4 text-[#fbbf24]" /> Key Graph: Attack Surface Map
           </div>
           <div className="min-h-[360px]">
-            <AttackGraph graphData={graphData} />
+            <ReportAttackGraph graphData={graphData} />
           </div>
         </div>
 
@@ -244,7 +379,23 @@ export default function ReportPage() {
             </ul>
           </div>
         </div>
+        </div>
       </main>
+      <div className="print:hidden">
+        <GeminiChatWidget />
+      </div>
+      <style jsx global>{`
+        @media print {
+          @page {
+            size: A4 portrait;
+            margin: 8mm;
+          }
+          html, body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+        }
+      `}</style>
     </div>
   )
 }
@@ -254,6 +405,15 @@ function Metric({ label, value }: { label: string; value: string }) {
     <div className="gs-card p-4">
       <div className="text-xs text-[var(--text-muted)]">{label}</div>
       <div className="mt-1 text-lg font-bold font-mono">{value}</div>
+    </div>
+  )
+}
+
+function PrintMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="border border-[#d7d2c8] px-2 py-1.5">
+      <div className="text-[10px] text-[#6b7280]">{label}</div>
+      <div className="text-xs font-semibold font-mono text-[#111827] mt-0.5">{value}</div>
     </div>
   )
 }

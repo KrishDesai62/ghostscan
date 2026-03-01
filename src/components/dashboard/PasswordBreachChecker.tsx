@@ -6,7 +6,7 @@ interface PasswordCheckResult {
   breached: boolean
   breachCount: number
   risk: 'low' | 'elevated' | 'medium' | 'high'
-  note: string
+  note?: string
 }
 
 export default function PasswordBreachChecker() {
@@ -94,7 +94,7 @@ export default function PasswordBreachChecker() {
             {result.breached ? (
               <AlertTriangle className="w-4 h-4 text-red-500" />
             ) : (
-              <CheckCircle2 className="w-4 h-4 text-red-500" />
+              <CheckCircle2 className="w-4 h-4 text-green-500" />
             )}
             <span className="text-sm font-semibold text-[var(--text)]">
               {result.breached ? 'Password appears in breach datasets' : 'No match found in known breach datasets'}
@@ -111,8 +111,7 @@ export default function PasswordBreachChecker() {
               <div className="font-mono mt-0.5 text-[var(--text)]">{result.breachCount.toLocaleString()}</div>
             </div>
           </div>
-
-          <p className="text-xs text-[var(--text-muted)]">{result.note}</p>
+          {result.note && <p className="text-xs text-[var(--text-muted)]">{result.note}</p>}
         </div>
       )}
     </div>
