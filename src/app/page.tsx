@@ -2,10 +2,11 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Shield, Zap, Database, Mail, ChevronRight, Lock, Eye, AlertTriangle } from 'lucide-react'
+import { DATA_BROKERS } from '@/lib/data-brokers'
 
 const STATS = [
   { value: '14B+', label: 'Records breached' },
-  { value: '47', label: 'Data brokers tracked' },
+  { value: String(DATA_BROKERS.length), label: 'Data brokers in local catalog' },
   { value: '3', label: 'Legal templates' },
   { value: '<2min', label: 'Full scan time' },
 ]
@@ -13,7 +14,7 @@ const STATS = [
 const FEATURES = [
   { icon: Shield, title: 'Verified Identity', desc: 'Email OTP + liveness check ensures only you can access your report' },
   { icon: Database, title: 'Breach Intelligence', desc: 'Cross-references HIBP\'s database of 14B+ leaked credentials' },
-  { icon: Mail, title: 'Data Removal Center', desc: 'Pre-filled GDPR/CCPA deletion emails for 47 brokers + every breach' },
+  { icon: Mail, title: 'Data Removal Center', desc: 'State-aware broker deletion/opt-out emails from a curated local catalog' },
   { icon: Zap, title: 'Risk Simulation', desc: 'See exactly how much each mitigation action reduces your score' },
 ]
 

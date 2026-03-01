@@ -49,7 +49,6 @@ export default function VerifyPage() {
   const [otpSending, setOtpSending] = useState(false)
   const [otpMode, setOtpMode] = useState<'server' | 'demo'>('server')
   const [otpVerified, setOtpVerified] = useState(false)
-  const [magicLinkVerifying, setMagicLinkVerifying] = useState(false)
   const [consent, setConsent] = useState({ privacy: false, processing: false, camera: false })
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -71,48 +70,6 @@ export default function VerifyPage() {
       streamRef.current?.getTracks().forEach(t => t.stop())
     }
   }, [])
-
-  useEffect(() => {
-    const tokenHash = params.get('token_hash')
-    const verifyType = params.get('type')
-    const emailFromQuery = params.get('email')
-    if (!tokenHash) return
-
-    if (emailFromQuery && emailFromQuery !== email) {
-      setEmail(emailFromQuery)
-    }
-    setStep('otp')
-    setOtpMode('server')
-    setMagicLinkVerifying(true)
-    setOtpError('')
-
-    void (async () => {
-      try {
-        const res = await fetch('/api/auth/otp/verify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            tokenHash,
-            type: verifyType === 'magiclink' ? 'magiclink' : 'email',
-          }),
-        })
-
-        if (!res.ok) {
-          const payload = await res.json().catch(() => null)
-          setOtpError(payload?.error || 'Magic link verification failed. Please resend OTP.')
-          return
-        }
-
-        setOtpVerified(true)
-        setStep('consent')
-      } catch {
-        setOtpError('Magic link verification failed. Please resend OTP.')
-      } finally {
-        setMagicLinkVerifying(false)
-      }
-    })()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params])
 
   async function startCamera() {
     try {
@@ -506,14 +463,9 @@ export default function VerifyPage() {
             <p className="text-[#00ff9d] font-mono text-sm mb-6">{email}</p>
             <div className="bg-[#ffd16611] border border-[#ffd16633] rounded-lg p-3 mb-5 text-xs text-[#ffd166] font-mono">
               {otpMode === 'server'
-                ? '📨 Using Supabase email auth. Paste 6-digit OTP if shown, or click magic link in the same email.'
+                ? '📨 Using Supabase OTP. Enter the 6-digit code from your email.'
                 : <>🎭 Demo mode fallback: use code <strong>123456</strong></>}
             </div>
-            {magicLinkVerifying && (
-              <div className="bg-[#4cc9f011] border border-[#4cc9f033] rounded-lg p-3 mb-5 text-xs text-[#4cc9f0] font-mono">
-                Verifying magic link...
-              </div>
-            )}
             <form onSubmit={handleOtpSubmit} className="space-y-4">
               <input
                 type="text" maxLength={6} autoFocus

@@ -1,7 +1,7 @@
 'use client'
 import { useState, useCallback } from 'react'
 import { X, Shield, Mail, ExternalLink, Download, Copy, CheckCircle2, ChevronDown, ChevronUp, Search, Filter, Send, AlertCircle, Globe, FileText, Zap, Sparkles } from 'lucide-react'
-import { DATA_BROKERS, type DataBroker } from '@/lib/data-brokers'
+import { getRecommendedBrokersForUser, type DataBroker } from '@/lib/data-brokers'
 import { generateLegalEmail, generateEmlContent, generateMailtoUrl, type LegalRegime } from '@/lib/legal-templates'
 import { getPrivacyLawProfile, type ResidencyState } from '@/lib/us-privacy-laws'
 
@@ -49,9 +49,14 @@ export default function DeletionCenter({ open, onClose, email, breaches, scanId,
 
   const userName = email.split('@')[0]
   const lawProfile = getPrivacyLawProfile(userState as ResidencyState)
+  const brokerTargets = getRecommendedBrokersForUser({
+    email,
+    userState,
+    breachCount: breaches.length,
+  })
 
   // Filter brokers
-  const filteredBrokers = DATA_BROKERS.filter(b => {
+  const filteredBrokers = brokerTargets.filter(b => {
     const matchSearch = !search || b.name.toLowerCase().includes(search.toLowerCase()) || b.category.toLowerCase().includes(search.toLowerCase())
     const templateRegimes = getTemplateRegimesForBroker(b)
     const matchRegime = filterRegime === 'all' || templateRegimes.includes(filterRegime as LegalRegime)
@@ -61,7 +66,7 @@ export default function DeletionCenter({ open, onClose, email, breaches, scanId,
   // Stats
   const sentCount   = Object.values(requests).filter(r => r.status === 'sent').length
   const deletedCount= Object.values(requests).filter(r => r.status === 'deleted').length
-  const totalTargets= DATA_BROKERS.length + breaches.length
+  const totalTargets= brokerTargets.length + breaches.length
 
   function getEmailForTarget(target: DataBroker | Breach, regime: LegalRegime) {
     const isBroker = 'privacyEmail' in target
@@ -75,6 +80,8 @@ export default function DeletionCenter({ open, onClose, email, breaches, scanId,
       targetName: isBroker ? target.name : (target as Breach).breach_name,
       targetEmail: isBroker ? target.privacyEmail : `privacy@${(target as Breach).breach_domain}`,
       regime: effectiveRegime,
+      targetType: isBroker ? 'broker' : 'breach',
+      requestType: isBroker ? 'combined' : 'delete',
       dataClasses: isBroker ? undefined : (target as Breach).data_classes,
       breachDate:  isBroker ? undefined : (target as Breach).breach_date,
       stateLabel: lawProfile.label,
@@ -284,7 +291,7 @@ export default function DeletionCenter({ open, onClose, email, breaches, scanId,
         {/* Tabs */}
         <div className="flex border-b border-[#1e2d45] bg-[#080b12]">
           {[
-            { id: 'brokers', label: `Data Brokers (${DATA_BROKERS.length})` },
+            { id: 'brokers', label: `Data Brokers (${brokerTargets.length})` },
             { id: 'breaches', label: `Breach Sources (${breaches.length})` },
             { id: 'sent', label: `Sent (${sentCount})` },
           ].map(t => (

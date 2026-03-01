@@ -10,6 +10,8 @@ export interface LegalEmailContext {
   targetName: string;
   targetEmail: string;
   regime: LegalRegime;
+  targetType?: 'broker' | 'breach' | 'other';
+  requestType?: 'delete' | 'opt_out_sale' | 'combined';
   dataClasses?: string[];
   breachDate?: string;
   refId?: string;
@@ -36,7 +38,15 @@ function today(): string {
 
 // ── GDPR Article 17 Erasure ───────────────────────────────────
 function gdprErasure(ctx: LegalEmailContext, refId: string): { subject: string; body: string } {
-  const subject = `Right to Erasure Request — GDPR Article 17 — ${ctx.targetName} — Ref: ${refId}`;
+  const isBroker = ctx.targetType === 'broker';
+  const subject = isBroker
+    ? `Data Broker Erasure & Processing Objection — GDPR Article 17/21 — ${ctx.targetName} — Ref: ${refId}`
+    : `Right to Erasure Request — GDPR Article 17 — ${ctx.targetName} — Ref: ${refId}`;
+  const brokerSpecificBlock = isBroker
+    ? `5. BROKER PROCESSING OBJECTION (Articles 21 and 17)
+   I object to your profiling, sale, sharing, and onward transfer of my personal data for broker or marketing purposes. Please cease this processing and suppress future profiling tied to my identifiers.
+`
+    : '';
   const body = `To the Data Protection Officer at ${ctx.targetName},
 
 Date: ${today()}
@@ -76,6 +86,7 @@ I hereby request that ${ctx.targetName} ("the Controller"):
 
 4. IDENTITY CONFIRMATION
    I am the owner of the email address ${ctx.userEmail}. If you require additional verification, please specify your preferred process. Note that requiring disproportionate identification is itself a potential GDPR violation.
+${brokerSpecificBlock}
 
 If you are unable to honour this request in full, please provide written grounds citing the specific legal basis for any exception claimed.
 
@@ -100,7 +111,17 @@ Reference: ${refId}
 
 // ── CCPA Section 1798.105 Deletion ───────────────────────────
 function ccpaDeletion(ctx: LegalEmailContext, refId: string): { subject: string; body: string } {
-  const subject = `CCPA Deletion Request — Cal. Civ. Code §1798.105 — ${ctx.targetName} — Ref: ${refId}`;
+  const isBroker = ctx.targetType === 'broker';
+  const subject = isBroker
+    ? `CCPA Data Broker Deletion / Do-Not-Sell Request — Cal. Civ. Code §1798.105 — ${ctx.targetName} — Ref: ${refId}`
+    : `CCPA Deletion Request — Cal. Civ. Code §1798.105 — ${ctx.targetName} — Ref: ${refId}`;
+  const brokerSpecificBlock = isBroker
+    ? `BROKER-SPECIFIC INSTRUCTION:
+  • Treat this as both a deletion request and a do-not-sell/share instruction.
+  • Remove my listing/profile data from people-search and broker products.
+  • Do not re-ingest or republish my personal data after deletion.
+`
+    : '';
   const body = `To the Privacy Department / Legal Team at ${ctx.targetName},
 
 Date: ${today()}
@@ -143,6 +164,7 @@ PLEASE NOTE:
   • You may not charge a fee for processing this request
   • Deletion must extend to service providers and third parties to whom you have sold my data
   • Under CPRA §1798.121, I also request you do not sell or share my personal information
+${brokerSpecificBlock}
 
 If you believe an exception under §1798.105(d) applies, please identify the specific exception in writing.
 
@@ -167,7 +189,17 @@ Reference: ${refId}
 function usStateDeletion(ctx: LegalEmailContext, refId: string): { subject: string; body: string } {
   const stateLabel = ctx.stateLabel || 'my U.S. state';
   const stateLawName = ctx.stateLawName || 'applicable state privacy law';
-  const subject = `Consumer Data Deletion Request — ${stateLawName} — ${ctx.targetName} — Ref: ${refId}`;
+  const isBroker = ctx.targetType === 'broker';
+  const subject = isBroker
+    ? `Data Broker Opt-Out & Deletion Request — ${stateLawName} — ${ctx.targetName} — Ref: ${refId}`
+    : `Consumer Data Deletion Request — ${stateLawName} — ${ctx.targetName} — Ref: ${refId}`;
+  const brokerSpecificBlock = isBroker
+    ? `BROKER-SPECIFIC REQUEST SCOPE:
+  • Delete personal information associated with my identifiers
+  • Stop selling, sharing, licensing, or disclosing my data
+  • Suppress future re-collection for people-search or marketing profiles
+`
+    : '';
   const body = `To the Privacy Team at ${ctx.targetName},
 
 Date: ${today()}
@@ -188,6 +220,7 @@ I request that ${ctx.targetName} delete personal information associated with my 
   • Account identifiers, profile data, and inferred data
   • Device, IP, or behavioral records tied to my identity
   • Data shared with service providers or third parties where deletion is required
+${brokerSpecificBlock}
 
 Please:
   1. Confirm receipt of this request

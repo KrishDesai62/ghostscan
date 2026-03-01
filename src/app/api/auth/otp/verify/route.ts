@@ -7,11 +7,6 @@ const TokenSchema = z.object({
   token: z.string().length(6),
 });
 
-const TokenHashSchema = z.object({
-  tokenHash: z.string().min(10),
-  type: z.enum(['email', 'magiclink']).default('email'),
-});
-
 function getSupabaseServerClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
   const key =
@@ -37,25 +32,15 @@ export async function POST(req: NextRequest) {
   }
 
   const tokenParsed = TokenSchema.safeParse(rawBody);
-  const hashParsed = TokenHashSchema.safeParse(rawBody);
-
-  let error: { message?: string } | null = null;
-  if (tokenParsed.success) {
-    const result = await supabase.auth.verifyOtp({
-      email: tokenParsed.data.email,
-      token: tokenParsed.data.token,
-      type: 'email',
-    });
-    error = result.error;
-  } else if (hashParsed.success) {
-    const result = await supabase.auth.verifyOtp({
-      token_hash: hashParsed.data.tokenHash,
-      type: hashParsed.data.type,
-    });
-    error = result.error;
-  } else {
+  if (!tokenParsed.success) {
     return NextResponse.json({ error: 'Invalid request payload' }, { status: 400 });
   }
+
+  const { error } = await supabase.auth.verifyOtp({
+    email: tokenParsed.data.email,
+    token: tokenParsed.data.token,
+    type: 'email',
+  });
 
   if (error) {
     return NextResponse.json({ error: error.message || 'Invalid or expired code' }, { status: 400 });

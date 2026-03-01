@@ -28,16 +28,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Supabase OTP is not configured on server.' }, { status: 503 });
   }
 
-  const appUrl =
-    process.env.NEXT_PUBLIC_APP_URL ||
-    req.headers.get('origin') ||
-    'http://localhost:3000';
-
   const { error } = await supabase.auth.signInWithOtp({
     email: body.email,
     options: {
       shouldCreateUser: true,
-      emailRedirectTo: `${appUrl}/verify?email=${encodeURIComponent(body.email)}`,
     },
   });
 
