@@ -61,7 +61,7 @@ export default function ReportPage() {
   if (!result) {
     return (
       <div className="min-h-screen grid-bg flex items-center justify-center">
-        <div className="text-[#00ff9d] font-mono text-sm animate-pulse">Loading summary report...</div>
+        <div className="text-[var(--accent)] font-mono text-sm animate-pulse">Loading summary report...</div>
       </div>
     )
   }
@@ -70,14 +70,14 @@ export default function ReportPage() {
 
   return (
     <div className="min-h-screen grid-bg">
-      <header className="sticky top-0 z-40 border-b border-[#1e2d45] bg-[#080b12]/90 backdrop-blur-sm print:hidden">
+      <header className="sticky top-0 z-40 border-b border-black/[0.06] dark:border-white/[0.06] glass-nav print:hidden">
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-7 h-7 bg-[#00ff9d] rounded-md flex items-center justify-center">
-              <Eye className="w-3.5 h-3.5 text-[#080b12]" />
+            <div className="w-7 h-7 bg-[var(--accent)] rounded-md flex items-center justify-center">
+              <Eye className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold">Ghost<span className="text-[#00ff9d]">Scan</span></span>
-            <span className="hidden md:block text-gray-600 text-sm font-mono">| Summary Report</span>
+            <span className="font-bold">Ghost<span className="text-[var(--accent)]">Scan</span></span>
+            <span className="hidden md:block text-[var(--text-muted)] text-sm font-mono">| Summary Report</span>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={() => window.print()} className="gs-btn-ghost text-sm py-1.5 px-3 flex items-center gap-1.5">
@@ -94,10 +94,10 @@ export default function ReportPage() {
         <div className="gs-card p-5">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div>
-              <h1 className="text-xl font-bold text-white">Exposure Summary Report</h1>
-              <p className="text-sm text-gray-500 mt-1 font-mono">{email || 'Unknown email'}</p>
+              <h1 className="text-xl font-bold">Exposure Summary Report</h1>
+              <p className="text-sm text-[var(--text-muted)] mt-1 font-mono">{email || 'Unknown email'}</p>
             </div>
-            <span className="text-xs px-2 py-1 rounded-full border border-[#00ff9d33] bg-[#00ff9d11] text-[#00ff9d] font-mono">
+            <span className="text-xs px-2 py-1 rounded-full border border-[var(--accent)]/20 bg-[var(--accent)]/[0.07] text-[var(--accent)] font-mono">
               Legal documents excluded
             </span>
           </div>
@@ -114,8 +114,8 @@ export default function ReportPage() {
         <div className="gs-card p-4">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div>
-              <div className="text-sm font-semibold text-gray-200">Score Breakdown Help</div>
-              <p className="text-xs text-gray-500 mt-0.5">See what each score means and how it is calculated.</p>
+              <div className="text-sm font-semibold">Score Breakdown Help</div>
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">See what each score means and how it is calculated.</p>
             </div>
             <button
               onClick={() => setShowScoreGuide((v) => !v)}
@@ -128,10 +128,10 @@ export default function ReportPage() {
           {showScoreGuide && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
               {scoreGuide.map((item) => (
-                <div key={item.title} className="bg-[#0a111d] border border-[#1e2d45] rounded p-3">
-                  <div className="text-sm font-semibold text-white">{item.title}</div>
-                  <div className="text-xs text-[#4cc9f0] font-mono mt-1">{item.formula}</div>
-                  <p className="text-xs text-gray-400 mt-1.5">{item.explain}</p>
+                <div key={item.title} className="bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] rounded p-3">
+                  <div className="text-sm font-semibold">{item.title}</div>
+                  <div className="text-xs text-blue-500 font-mono mt-1">{item.formula}</div>
+                  <p className="text-xs text-[var(--text-muted)] mt-1.5">{item.explain}</p>
                 </div>
               ))}
             </div>
@@ -140,33 +140,33 @@ export default function ReportPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="gs-card p-5">
-            <div className="text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-[#4cc9f0]" /> Key Graph: Risk Dimensions
+            <div className="text-sm font-semibold text-[var(--text-muted)] mb-3 flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-blue-500" /> Key Graph: Risk Dimensions
             </div>
             <RadarChart dimensions={scoreBundle?.dimensions} />
           </div>
 
           <div className="gs-card p-5">
-            <div className="text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-[#00ff9d]" /> Key Graph: Breach Timeline
+            <div className="text-sm font-semibold text-[var(--text-muted)] mb-3 flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-[var(--accent)]" /> Key Graph: Breach Timeline
             </div>
             <TimelineChart breaches={breaches || []} />
           </div>
         </div>
 
         <div className="gs-card p-5">
-          <div className="text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
+          <div className="text-sm font-semibold text-[var(--text-muted)] mb-3 flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-[#f8a5ff]" /> Extra Graph: Time-Series Analysis
           </div>
           <TimeSeriesAnalysisChart breaches={breaches || []} forecastNext12Months={timeSeries?.forecastNext12Months ?? 0} />
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-[var(--text-muted)] mt-2">
             Shows yearly breach count, cumulative trajectory, and next-12-month forecast.
           </p>
         </div>
 
         <div className="gs-card p-5">
-          <div className="text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-[#ffd166]" /> Key Graph: Attack Surface Map
+          <div className="text-sm font-semibold text-[var(--text-muted)] mb-3 flex items-center gap-2">
+            <BarChart3 className="w-4 h-4 text-[#fbbf24]" /> Key Graph: Attack Surface Map
           </div>
           <div className="min-h-[360px]">
             <AttackGraph graphData={graphData} />
@@ -175,20 +175,20 @@ export default function ReportPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="gs-card p-5">
-            <div className="text-sm font-semibold text-gray-300 mb-3">Time-Series Outputs</div>
-            <ul className="text-sm text-gray-300 space-y-2.5">
+            <div className="text-sm font-semibold text-[var(--text-muted)] mb-3">Time-Series Outputs</div>
+            <ul className="text-sm text-[var(--text-muted)] space-y-2.5">
               <li>
                 <div className="flex items-center gap-2 flex-wrap">
                   <span>Average breach interval: <span className="font-mono">{timeSeries?.averageIntervalMonths ? `${timeSeries.averageIntervalMonths.toFixed(1)} months` : 'N/A'}</span></span>
                   <button
                     onClick={() => setOpenMetricHelp((v) => v === 'interval' ? null : 'interval')}
-                    className="text-[11px] px-2 py-0.5 rounded border border-[#4cc9f044] text-[#4cc9f0] bg-[#4cc9f011] hover:bg-[#4cc9f022]"
+                    className="text-[11px] px-2 py-0.5 rounded border border-[#60a5fa44] text-blue-500 bg-[#60a5fa11] hover:bg-[#60a5fa22]"
                   >
                     Why?
                   </button>
                 </div>
                 {openMetricHelp === 'interval' && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-[var(--text-muted)] mt-1">
                     Equation: <span className="font-mono">avg_interval_months = mean(gap between consecutive breach dates)</span>. Higher means breaches are spaced farther apart.
                   </p>
                 )}
@@ -198,13 +198,13 @@ export default function ReportPage() {
                   <span>Expected next breach window: <span className="font-mono">{analytics?.expectedWindow ? `${analytics.expectedWindow.min}-${analytics.expectedWindow.max} months` : 'N/A'}</span></span>
                   <button
                     onClick={() => setOpenMetricHelp((v) => v === 'window' ? null : 'window')}
-                    className="text-[11px] px-2 py-0.5 rounded border border-[#4cc9f044] text-[#4cc9f0] bg-[#4cc9f011] hover:bg-[#4cc9f022]"
+                    className="text-[11px] px-2 py-0.5 rounded border border-[#60a5fa44] text-blue-500 bg-[#60a5fa11] hover:bg-[#60a5fa22]"
                   >
                     Why?
                   </button>
                 </div>
                 {openMetricHelp === 'window' && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-[var(--text-muted)] mt-1">
                     Equation: <span className="font-mono">center = avg_interval * trend_multiplier</span>, then <span className="font-mono">min=0.75*center</span>, <span className="font-mono">max=1.25*center</span>.
                   </p>
                 )}
@@ -214,13 +214,13 @@ export default function ReportPage() {
                   <span>Momentum score: <span className="font-mono">{analytics?.momentumScore ?? 0}/100</span></span>
                   <button
                     onClick={() => setOpenMetricHelp((v) => v === 'momentum' ? null : 'momentum')}
-                    className="text-[11px] px-2 py-0.5 rounded border border-[#4cc9f044] text-[#4cc9f0] bg-[#4cc9f011] hover:bg-[#4cc9f022]"
+                    className="text-[11px] px-2 py-0.5 rounded border border-[#60a5fa44] text-blue-500 bg-[#60a5fa11] hover:bg-[#60a5fa22]"
                   >
                     Why?
                   </button>
                 </div>
                 {openMetricHelp === 'momentum' && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-[var(--text-muted)] mt-1">
                     Equation: <span className="font-mono">momentum = clamp(round(min(velocity*18,70) + trendBonus + recencyBonus), 0..100)</span>, where
                     <span className="font-mono"> trendBonus = +20 (increasing), 0 (stable), -10 (declining)</span> and
                     <span className="font-mono"> recencyBonus = +12 (&le;18 months), +6 (&le;36 months), else 0</span>.
@@ -229,13 +229,13 @@ export default function ReportPage() {
                 )}
               </li>
               <li>12-month forecast: <span className="font-mono">{timeSeries?.forecastNext12Months ?? 0}</span></li>
-              <li>Trend explanation: <span className="text-gray-400">{analytics?.trendExplanation || 'N/A'}</span></li>
+              <li>Trend explanation: <span className="text-[var(--text-muted)]">{analytics?.trendExplanation || 'N/A'}</span></li>
             </ul>
           </div>
 
           <div className="gs-card p-5">
-            <div className="text-sm font-semibold text-gray-300 mb-3">Detailed Risk Notes</div>
-            <ul className="text-sm text-gray-300 space-y-2">
+            <div className="text-sm font-semibold text-[var(--text-muted)] mb-3">Detailed Risk Notes</div>
+            <ul className="text-sm text-[var(--text-muted)] space-y-2">
               <li>Account Takeover: <span className="font-mono">{scoreBundle?.dimensions?.takeover ?? 0}</span></li>
               <li>Identity Theft: <span className="font-mono">{scoreBundle?.dimensions?.theft ?? 0}</span></li>
               <li>Phishing Exposure: <span className="font-mono">{scoreBundle?.dimensions?.phishing ?? 0}</span></li>
@@ -252,8 +252,8 @@ export default function ReportPage() {
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="gs-card p-4">
-      <div className="text-xs text-gray-500">{label}</div>
-      <div className="mt-1 text-lg font-bold font-mono text-white">{value}</div>
+      <div className="text-xs text-[var(--text-muted)]">{label}</div>
+      <div className="mt-1 text-lg font-bold font-mono">{value}</div>
     </div>
   )
 }

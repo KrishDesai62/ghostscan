@@ -1,14 +1,20 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Shield, AlertTriangle, TrendingUp, Eye, Zap, Mail, Trash2, Clock, ChevronRight, ShieldCheck, Info, KeyRound, FileText } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Shield, AlertTriangle, TrendingUp, Eye, Zap, Mail, Trash2, Clock, ChevronRight, ShieldCheck, Info, KeyRound, FileText, ArrowRight, WandSparkles } from 'lucide-react'
 import RiskOverview from '@/components/dashboard/RiskOverview'
+import { AnimatedSection } from '@/components/ui/AnimatedSection'
+import { AnimatedStagger, AnimatedStaggerItem } from '@/components/ui/AnimatedStagger'
+import { TiltCard } from '@/components/ui/TiltCard'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import RadarChart from '@/components/dashboard/RadarChart'
 import TimelineChart from '@/components/dashboard/TimelineChart'
 import AttackGraph from '@/components/dashboard/AttackGraph'
 import MitigationSimulator from '@/components/dashboard/MitigationSimulator'
 import DeletionCenter from '@/components/deletion/DeletionCenter'
 import { getPrivacyLawProfile, type ResidencyState } from '@/lib/us-privacy-laws'
+import { DATA_BROKERS } from '@/lib/data-brokers'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -19,25 +25,15 @@ export default function DashboardPage() {
   const [showDeletion, setShowDeletion] = useState(false)
   const [activeTab, setActiveTab] = useState<'overview' | 'graph' | 'simulate'>('overview')
   const [userState, setUserState] = useState('US_OTHER')
+  const simulatorRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const r = sessionStorage.getItem('ghostscan_result')
     const e = sessionStorage.getItem('ghostscan_email')
     const v = sessionStorage.getItem('ghostscan_verified')
     const state = sessionStorage.getItem('ghostscan_state')
-    if (!r) {
-      setCheckedSession(true)
-      router.push('/')
-      return
-    }
-    try {
-      setResult(JSON.parse(r))
-    } catch {
-      sessionStorage.removeItem('ghostscan_result')
-      setCheckedSession(true)
-      router.push('/')
-      return
-    }
+    if (!r) { setCheckedSession(true); router.push('/'); return }
+    try { setResult(JSON.parse(r)) } catch { sessionStorage.removeItem('ghostscan_result'); setCheckedSession(true); router.push('/'); return }
     setEmail(e || '')
     setVerified(v === '1')
     setUserState(state || 'US_OTHER')
@@ -45,8 +41,8 @@ export default function DashboardPage() {
   }, [router])
 
   if (!result) return (
-    <div className="min-h-screen grid-bg flex items-center justify-center">
-      <div className="text-[#00ff9d] font-mono text-sm animate-pulse">
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-[var(--accent)] font-mono animate-pulse text-lg">
         {checkedSession ? 'Redirecting...' : 'Loading report...'}
       </div>
     </div>
@@ -55,276 +51,230 @@ export default function DashboardPage() {
   const { scoreBundle, breaches, velocity, trend, dataSource, timeSeries, analytics } = result
   const level = scoreBundle.level
   const velocityNum = Number.parseFloat(velocity || '0') || 0
-  const fallbackMomentum = Math.max(
-    0,
-    Math.min(
-      100,
-      Math.round(
-        velocityNum * 18 +
-        (trend === 'increasing' ? 20 : trend === 'declining' ? -10 : 0)
-      )
-    )
-  )
+  const fallbackMomentum = Math.max(0, Math.min(100, Math.round(velocityNum * 18 + (trend === 'increasing' ? 20 : trend === 'declining' ? -10 : 0))))
   const momentumScore = analytics?.momentumScore ?? fallbackMomentum
-  const expectedWindowText = analytics?.expectedWindow
-    ? `${analytics.expectedWindow.min}-${analytics.expectedWindow.max} months`
-    : 'Insufficient history'
+  const expectedWindowText = analytics?.expectedWindow ? `${analytics.expectedWindow.min}-${analytics.expectedWindow.max} months` : 'Insufficient history'
   const lawProfile = getPrivacyLawProfile(userState as ResidencyState)
 
   return (
-    <div className="min-h-screen grid-bg">
-      {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-[#1e2d45] bg-[#080b12]/90 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
+    <div className="min-h-screen">
+      <header className="sticky top-0 z-40 border-b border-black/[0.06] dark:border-white/[0.06] glass-nav">
+        <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-7 h-7 bg-[#00ff9d] rounded-md flex items-center justify-center">
-              <Eye className="w-3.5 h-3.5 text-[#080b12]" />
+            <div className="w-8 h-8 bg-[var(--accent)] rounded-xl flex items-center justify-center">
+              <Eye className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold">Ghost<span className="text-[#00ff9d]">Scan</span></span>
-            <span className="hidden md:block text-gray-600 text-sm font-mono">|</span>
-              <span className="hidden md:block text-gray-500 text-xs font-mono truncate max-w-48">{email}</span>
-              <span className="hidden lg:block text-gray-600 text-xs font-mono">· {userState}</span>
-            </div>
+            <span className="font-heading font-bold text-lg">Ghost<span className="text-[var(--accent)]">Scan</span></span>
+            <span className="hidden md:block text-[var(--text-muted)] mx-2">|</span>
+            <span className="hidden md:block text-[var(--text-muted)] text-sm truncate max-w-48">{email}</span>
+          </div>
           <div className="flex items-center gap-2">
             {verified ? (
-              <span className="flex items-center gap-1.5 bg-[#00ff9d11] border border-[#00ff9d33] text-[#00ff9d] text-xs font-bold px-2.5 py-1 rounded-full">
-                <ShieldCheck className="w-3 h-3" /> VERIFIED
+              <span className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm font-bold px-3 py-1.5 rounded-full">
+                <ShieldCheck className="w-3.5 h-3.5" /> Verified
               </span>
             ) : (
-              <span className="flex items-center gap-1.5 bg-[#ffd16611] border border-[#ffd16633] text-[#ffd166] text-xs px-2.5 py-1 rounded-full">
-                <Info className="w-3 h-3" /> LIMITED REPORT
+              <span className="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-600 dark:text-amber-400 text-sm px-3 py-1.5 rounded-full">
+                <Info className="w-3.5 h-3.5" /> Limited
               </span>
             )}
-            <button
-              onClick={() => router.push('/checker')}
-              className="gs-btn-ghost text-sm py-2 px-3"
-            >
-              Scam Checker
+            <button onClick={() => router.push('/checker')} className="gs-btn-ghost text-sm py-2 px-4">Scam Checker</button>
+            <button onClick={() => router.push('/password-checker')} className="gs-btn-ghost text-sm py-2 px-4 flex items-center gap-1.5">
+              <KeyRound className="w-3.5 h-3.5" /> Password
             </button>
-            <button
-              onClick={() => router.push('/password-checker')}
-              className="gs-btn-ghost text-sm py-2 px-3 flex items-center gap-1.5"
-            >
-              <KeyRound className="w-3.5 h-3.5" /> Password Checker
+            <button onClick={() => router.push('/report')} className="gs-btn-ghost text-sm py-2 px-4 flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5" /> Report
             </button>
-            <button
-              onClick={() => router.push('/report')}
-              className="gs-btn-ghost text-sm py-2 px-3 flex items-center gap-1.5"
-            >
-              <FileText className="w-3.5 h-3.5" /> Summary Report
-            </button>
-            <button
-              onClick={() => setShowDeletion(true)}
-              className="gs-btn-primary text-sm py-2 px-4 flex items-center gap-2"
-            >
-              <Shield className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">Data Removal Center</span>
-              <span className="md:hidden">Remove Data</span>
-            </button>
+            <ThemeToggle />
           </div>
         </div>
       </header>
 
-      {/* Limited report banner */}
       {!verified && (
-        <div className="bg-[#ffd16611] border-b border-[#ffd16633] px-4 py-2.5">
-          <div className="max-w-7xl mx-auto flex items-center gap-3 text-sm">
-            <AlertTriangle className="w-4 h-4 text-[#ffd166] flex-shrink-0" />
-            <span className="text-[#ffd166]">Limited Report — </span>
-            <span className="text-gray-400">Complete liveness verification to unlock the full Verified dashboard and higher confidence scoring.</span>
-            <button onClick={() => router.push('/verify')} className="ml-auto text-[#ffd166] font-semibold text-xs border border-[#ffd16633] px-3 py-1 rounded-full hover:bg-[#ffd16611] transition-colors whitespace-nowrap">
-              Verify Now →
+        <div className="bg-amber-50 dark:bg-amber-500/5 border-b border-amber-200 dark:border-amber-500/20 px-6 py-3">
+          <div className="max-w-[1400px] mx-auto flex items-center gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0" />
+            <span className="text-amber-700 dark:text-amber-400 font-medium">Limited Report</span>
+            <span className="text-[var(--text-muted)]">— Complete liveness verification for the full dashboard.</span>
+            <button onClick={() => router.push('/verify')} className="ml-auto text-amber-600 dark:text-amber-400 font-semibold text-sm border border-amber-300 dark:border-amber-500/30 px-4 py-1.5 rounded-full hover:bg-amber-100 dark:hover:bg-amber-500/10 transition-colors whitespace-nowrap">
+              Verify Now
             </button>
           </div>
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 py-6 space-y-4">
-        <div className={`gs-card px-4 py-2.5 text-xs font-mono ${
-          dataSource?.startsWith('live') ? 'border-[#00ff9d33] text-[#00ff9d]' : 'border-[#ffd16633] text-[#ffd166]'
-        }`}>
-          {dataSource?.startsWith('live')
-            ? 'Live breach intelligence source: HIBP'
-            : 'Mock breach dataset in use. Add HIBP_API_KEY in .env.local for real breach data.'}
-        </div>
-        {/* Top row: Risk Overview + Breach Stats */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <RiskOverview scoreBundle={scoreBundle} verified={verified} breachCount={breaches.length} />
+      <div className="max-w-[1400px] mx-auto px-6 py-8 space-y-8">
+        {/* Action cards */}
+        <AnimatedStagger className="grid grid-cols-1 md:grid-cols-2 gap-4" staggerDelay={0.08}>
+          <AnimatedStaggerItem>
+            <button onClick={() => { setActiveTab('simulate'); setTimeout(() => simulatorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100) }} className="w-full gs-card p-6 text-left hover:shadow-lg transition-all group">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-[var(--accent)]/10 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-[var(--accent)]/20 transition-colors">
+                  <WandSparkles className="w-7 h-7 text-[var(--accent)]" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold mb-1">What Should I Do?</h3>
+                  <p className="text-[var(--text-muted)]">See which actions will reduce your risk score the most.</p>
+                </div>
+                <ArrowRight className="w-5 h-5 text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-colors" />
+              </div>
+            </button>
+          </AnimatedStaggerItem>
+          <AnimatedStaggerItem>
+            <button onClick={() => setShowDeletion(true)} className="w-full gs-card p-6 text-left hover:shadow-lg transition-all group">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-blue-50 dark:bg-blue-500/10 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-blue-100 dark:group-hover:bg-blue-500/20 transition-colors">
+                  <Mail className="w-7 h-7 text-blue-500" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold mb-1">Remove My Data</h3>
+                  <p className="text-[var(--text-muted)]">Send deletion requests to {DATA_BROKERS.length}+ data brokers and breach sources.</p>
+                </div>
+                <ArrowRight className="w-5 h-5 text-[var(--text-muted)] group-hover:text-blue-500 transition-colors" />
+              </div>
+            </button>
+          </AnimatedStaggerItem>
+        </AnimatedStagger>
 
-          {/* Quick stats */}
-          <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { icon: AlertTriangle, label: 'Breaches Found', value: breaches.length, color: level === 'high' ? '#ff3b5c' : level === 'moderate' ? '#ffd166' : '#00ff9d' },
-              { icon: TrendingUp,    label: 'Exposure Trend', value: trend?.toUpperCase() || 'STABLE', color: trend === 'increasing' ? '#ff3b5c' : trend === 'declining' ? '#00ff9d' : '#ffd166' },
-              { icon: Zap,           label: 'Breach/Year',   value: velocityNum.toFixed(1), color: '#4cc9f0' },
-              { icon: Clock,         label: 'Forecast 12M', value: `${timeSeries?.forecastNext12Months ?? 0}`, color: '#6b7280' },
-            ].map(item => (
-              <div key={item.label} className="gs-card p-4 flex flex-col gap-1">
-                <div className="flex items-center gap-1.5">
-                  <item.icon className="w-3.5 h-3.5" style={{ color: item.color }} />
-                  <span className="text-xs text-gray-500">{item.label}</span>
-                </div>
-                <div className="text-xl font-bold font-mono" style={{ color: item.color }}>{item.value}</div>
-                {item.label === 'Exposure Trend' && (
-                  <p className="text-[11px] text-gray-600 leading-snug mt-0.5">
-                    {trend === 'declining' ? 'Fewer breaches in last 24 months vs previous 24 months.' :
-                     trend === 'increasing' ? 'More breaches in last 24 months vs previous 24 months.' :
-                     'Recent and prior 24-month periods are similar.'}
-                  </p>
-                )}
-              </div>
-            ))}
+        {/* Score + Stats */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <AnimatedSection variant="fadeUp">
+            <RiskOverview scoreBundle={scoreBundle} verified={verified} breachCount={breaches.length} />
+          </AnimatedSection>
 
-            {/* Breach list preview */}
-            <div className="col-span-2 md:col-span-4 gs-card p-4 bg-gradient-to-r from-[#0e1421] to-[#131c2d]">
-              <div className="text-xs text-gray-500 mb-3 font-mono uppercase tracking-wider">Breaches Detected</div>
-              <div className="flex flex-wrap gap-2">
-                {breaches.map((b: any) => (
-                  <span key={b.breach_name} className="gs-badge-high">{b.breach_name}</span>
-                ))}
-              </div>
-              <div className="mt-3 text-xs text-gray-500">
-                <span className="font-mono">Trend logic:</span> {analytics?.trendExplanation || 'Recent and prior periods are compared over 24-month windows.'}
-              </div>
-              <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2">
-                <div className="text-xs bg-[#080b12] border border-[#1e2d45] rounded-md px-2.5 py-2">
-                  <span className="text-gray-500">Avg breach interval</span>
-                  <div className="font-mono text-gray-300 mt-0.5">{timeSeries?.averageIntervalMonths ? `${timeSeries.averageIntervalMonths.toFixed(1)} months` : 'N/A'}</div>
-                  <p className="text-[11px] text-gray-600 mt-1">Average time between breach dates.</p>
+          <div className="lg:col-span-2 space-y-4">
+            <AnimatedStagger className="grid grid-cols-2 md:grid-cols-4 gap-4" staggerDelay={0.06}>
+              {[
+                { icon: AlertTriangle, label: 'Breaches', value: breaches.length, color: level === 'high' ? 'text-red-500' : level === 'moderate' ? 'text-amber-500' : 'text-blue-500' },
+                { icon: TrendingUp, label: 'Trend', value: trend?.toUpperCase() || 'STABLE', color: trend === 'increasing' ? 'text-red-500' : trend === 'declining' ? 'text-blue-500' : 'text-amber-500' },
+                { icon: Zap, label: 'Per Year', value: velocityNum.toFixed(1), color: 'text-blue-500' },
+                { icon: Clock, label: '12M Forecast', value: `${timeSeries?.forecastNext12Months ?? 0}`, color: 'text-[var(--text-muted)]' },
+              ].map(item => (
+                <AnimatedStaggerItem key={item.label}>
+                  <div className="gs-card p-5">
+                    <div className="flex items-center gap-2 mb-2">
+                      <item.icon className={`w-4 h-4 ${item.color}`} />
+                      <span className="text-sm text-[var(--text-muted)]">{item.label}</span>
+                    </div>
+                    <div className={`text-3xl font-extrabold font-mono ${item.color}`}>{item.value}</div>
+                  </div>
+                </AnimatedStaggerItem>
+              ))}
+            </AnimatedStagger>
+
+            <AnimatedSection variant="fadeUp">
+              <div className="gs-card p-5">
+                <div className="text-sm text-[var(--text-muted)] mb-3 font-mono uppercase tracking-wider">Breaches Detected</div>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {breaches.map((b: any) => (
+                    <span key={b.breach_name} className="gs-badge-high">{b.breach_name}</span>
+                  ))}
                 </div>
-                <div className="text-xs bg-[#080b12] border border-[#1e2d45] rounded-md px-2.5 py-2">
-                  <span className="text-gray-500">Momentum score</span>
-                  <div className="font-mono text-[#4cc9f0] mt-0.5">{momentumScore}/100</div>
-                  <p className="text-[11px] text-gray-600 mt-1">
-                    Blends breach velocity, trend direction, and recency. {momentumScore === 0 ? 'Zero means very low recent breach activity.' : ''}
-                  </p>
-                </div>
-                <div className="text-xs bg-[#080b12] border border-[#1e2d45] rounded-md px-2.5 py-2">
-                  <span className="text-gray-500">Expected next breach window</span>
-                  <div className="font-mono text-gray-300 mt-0.5">{expectedWindowText}</div>
-                  <p className="text-[11px] text-gray-600 mt-1">Estimated range from interval + trend adjustment.</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {[
+                    { label: 'Avg interval', value: timeSeries?.averageIntervalMonths ? `${timeSeries.averageIntervalMonths.toFixed(1)} mo` : 'N/A', color: '' },
+                    { label: 'Momentum', value: `${momentumScore}/100`, color: 'text-blue-500' },
+                    { label: 'Next breach window', value: expectedWindowText, color: '' },
+                  ].map(s => (
+                    <div key={s.label} className="glass rounded-xl px-4 py-3">
+                      <span className="text-sm text-[var(--text-muted)]">{s.label}</span>
+                      <div className={`font-mono text-lg mt-1 ${s.color}`}>{s.value}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="mt-2 text-xs">
-                <span className="font-mono text-gray-500">Cluster flag:</span>{' '}
-                <span className={analytics?.clusteredExposure ? 'text-[#ff3b5c]' : 'text-gray-400'}>
-                  {analytics?.clusteredExposure ? 'Recent exposures appear clustered' : 'No strong clustering pattern'}
-                </span>
+            </AnimatedSection>
+
+            <AnimatedSection variant="fadeUp">
+              <div className="gs-card p-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-sm text-[var(--text-muted)] mb-2 font-mono uppercase tracking-wider">Trend Analysis</div>
+                    <p className="leading-relaxed">
+                      {analytics?.trendExplanation || (trend === 'increasing'
+                        ? 'Your breach exposure is increasing — more incidents in the last 24 months.'
+                        : trend === 'declining'
+                        ? 'Good news — fewer breaches in the last 24 months.'
+                        : 'Your breach pattern is stable across recent periods.')}
+                    </p>
+                  </div>
+                  <div>
+                    <div className="text-sm text-[var(--text-muted)] mb-2 font-mono uppercase tracking-wider">Cluster Detection</div>
+                    <div className={`flex items-center gap-2 mb-2 ${analytics?.clusteredExposure ? 'text-red-500' : 'text-blue-500'}`}>
+                      <div className={`w-2.5 h-2.5 rounded-full ${analytics?.clusteredExposure ? 'bg-red-500' : 'bg-blue-500'}`} />
+                      <span className="font-semibold">{analytics?.clusteredExposure ? 'Clustered exposures detected' : 'No clustering pattern'}</span>
+                    </div>
+                    <p className="text-[var(--text-muted)] text-sm leading-relaxed">
+                      {analytics?.clusteredExposure
+                        ? 'Multiple breaches occurred in a short timeframe.'
+                        : 'Breaches are spread out with no unusual concentration.'}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
+            </AnimatedSection>
           </div>
         </div>
 
-        {/* Tab nav for middle panels */}
-        <div className="flex gap-1 bg-[#0e1421] border border-[#1e2d45] rounded-lg p-1 w-fit">
+        {/* Tabs */}
+        <div ref={simulatorRef} className="flex relative gap-1 glass rounded-2xl p-1.5 w-fit">
           {[
             { id: 'overview', label: 'Exposure Breakdown' },
-            { id: 'graph',    label: 'Attack Surface' },
+            { id: 'graph', label: 'Attack Surface' },
             { id: 'simulate', label: 'Mitigation Simulator' },
           ].map(t => (
-            <button
-              key={t.id}
-              onClick={() => setActiveTab(t.id as any)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === t.id ? 'bg-[#1e2d45] text-white' : 'text-gray-500 hover:text-gray-300'}`}
-            >
-              {t.label}
+            <button key={t.id} onClick={() => setActiveTab(t.id as any)} className={`relative px-5 py-2.5 rounded-xl text-sm font-medium transition-colors ${activeTab === t.id ? '' : 'text-[var(--text-muted)] hover:text-[var(--text)]'}`}>
+              {activeTab === t.id && (
+                <motion.div layoutId="tab-pill" className="absolute inset-0 bg-white dark:bg-white/10 rounded-xl shadow-sm" transition={{ type: 'spring', bounce: 0.2, duration: 0.4 }} />
+              )}
+              <span className="relative z-10">{t.label}</span>
             </button>
           ))}
         </div>
 
-        {/* Content panels */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-          {activeTab === 'overview' && (
-            <>
-              <div className="lg:col-span-2 gs-card p-5">
-                <div className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-[#4cc9f0]" /> Risk Dimensions
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <AnimatePresence mode="wait">
+            {activeTab === 'overview' && (
+              <motion.div key="overview" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }} className="contents">
+                <div className="lg:col-span-2 gs-card p-6">
+                  <div className="font-semibold mb-4 flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-blue-500" /> Risk Dimensions
+                  </div>
+                  <RadarChart dimensions={scoreBundle.dimensions} />
                 </div>
-                <RadarChart dimensions={scoreBundle.dimensions} />
-              </div>
-              <div className="lg:col-span-3 gs-card p-5">
-                <div className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-[#00ff9d]" /> Exposure Timeline
+                <div className="lg:col-span-3 gs-card p-6">
+                  <div className="font-semibold mb-4 flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-[var(--accent)]" /> Exposure Timeline
+                  </div>
+                  <TimelineChart breaches={breaches} />
                 </div>
-                <TimelineChart breaches={breaches} />
-              </div>
-            </>
-          )}
-
-          {activeTab === 'graph' && (
-            <div className="lg:col-span-5 gs-card p-5" style={{ minHeight: 420 }}>
-              <div className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-                <Eye className="w-4 h-4 text-[#4cc9f0]" /> Attack Surface Map
-              </div>
-              <AttackGraph graphData={result.graphData} />
-            </div>
-          )}
-
-          {activeTab === 'simulate' && (
-            <div className="lg:col-span-5">
-              <MitigationSimulator baseline={scoreBundle} hygiene={result.hygiene} />
-            </div>
-          )}
-
+              </motion.div>
+            )}
+            {activeTab === 'graph' && (
+              <motion.div key="graph" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }} className="lg:col-span-5 gs-card p-6" style={{ minHeight: 420 }}>
+                <div className="font-semibold mb-4 flex items-center gap-2">
+                  <Eye className="w-5 h-5 text-blue-500" /> Attack Surface Map
+                </div>
+                <AttackGraph graphData={result.graphData} />
+              </motion.div>
+            )}
+            {activeTab === 'simulate' && (
+              <motion.div key="simulate" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }} className="lg:col-span-5">
+                <MitigationSimulator baseline={scoreBundle} hygiene={result.hygiene} />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        {/* Legal actions row */}
-        <div className="gs-card p-5">
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-sm font-semibold text-gray-300 flex items-center gap-2">
-              <Mail className="w-4 h-4 text-[#00ff9d]" /> Legal Actions & Data Removal
-            </div>
-            <button onClick={() => setShowDeletion(true)} className="gs-btn-primary text-sm py-2 px-4 flex items-center gap-2">
-              Open Data Removal Center <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {[
-              { label: 'GDPR Article 17', desc: 'Right to erasure — EU/UK residents', badge: 'GDPR', color: '#4cc9f0' },
-              {
-                label: lawProfile.recommendedRegime === 'us_state_delete' ? `${lawProfile.lawName}` : 'CCPA §1798.105',
-                desc: lawProfile.recommendedRegime === 'us_state_delete' ? `${lawProfile.label} deletion right path` : 'California deletion right',
-                badge: lawProfile.recommendedRegime === 'us_state_delete' ? 'STATE' : 'CCPA',
-                color: '#ffd166'
-              },
-              { label: 'Breach Erasure', desc: 'Combined GDPR/CCPA for breach victims', badge: 'BREACH', color: '#ff3b5c' },
-            ].map(item => (
-              <button
-                key={item.label}
-                onClick={() => setShowDeletion(true)}
-                className="gs-card p-4 text-left hover:border-[#1e3a5f] transition-colors group"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded border" style={{ color: item.color, borderColor: `${item.color}44`, backgroundColor: `${item.color}11` }}>{item.badge}</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-gray-600 group-hover:text-[#00ff9d] transition-colors" />
-                </div>
-                <div className="font-semibold text-sm text-white">{item.label}</div>
-                <div className="text-xs text-gray-500 mt-0.5">{item.desc}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="flex items-center justify-between py-2 text-xs text-gray-600">
-          <span className="font-mono">GhostScan · Demo Build · Data expires in 30 days</span>
-          <div className="flex items-center gap-4">
-            <button onClick={() => { sessionStorage.clear(); router.push('/') }} className="flex items-center gap-1.5 hover:text-[#ff3b5c] transition-colors">
-              <Trash2 className="w-3.5 h-3.5" /> Delete All Data
-            </button>
-          </div>
+        <div className="flex items-center justify-between py-4 text-sm text-[var(--text-muted)] border-t border-black/[0.06] dark:border-white/[0.06]">
+          <span className="font-mono">GhostScan</span>
+          <button onClick={() => { sessionStorage.clear(); router.push('/') }} className="flex items-center gap-2 hover:text-red-500 transition-colors">
+            <Trash2 className="w-4 h-4" /> Delete All Data
+          </button>
         </div>
       </div>
 
-      {/* Deletion Center */}
-      <DeletionCenter
-        open={showDeletion}
-        onClose={() => setShowDeletion(false)}
-        email={email}
-        breaches={breaches}
-        scanId={result.scanId}
-        userState={userState}
-      />
+      <DeletionCenter open={showDeletion} onClose={() => setShowDeletion(false)} email={email} breaches={breaches} scanId={result.scanId} userState={userState} />
     </div>
   )
 }

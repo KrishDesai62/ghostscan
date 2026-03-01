@@ -1,4 +1,4 @@
-// File: /Users/krishd/Downloads/ghostscan/src/app/api/auth/otp/verify/route.ts
+// File: /Users/shrivant/Documents/GitHub/ghostscan/src/app/api/auth/otp/verify/route.ts
 import * as entry from '../../../../../../../src/app/api/auth/otp/verify/route.js'
 import type { NextRequest } from 'next/server.js'
 

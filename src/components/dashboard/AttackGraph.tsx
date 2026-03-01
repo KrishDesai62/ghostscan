@@ -1,15 +1,24 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface Node { id: string; label: string; type: 'email' | 'breach' | 'data_class'; color?: string }
 interface Edge { source: string; target: string; label?: string }
 interface Props { graphData: { nodes: Node[]; edges: Edge[] } }
 
-const NODE_COLORS = { email: '#00ff9d', breach: '#ff3b5c', data_class: '#4cc9f0' }
+const NODE_COLORS = { email: '#3b82f6', breach: '#f87171', data_class: '#60a5fa' }
 const NODE_RADIUS = { email: 24, breach: 18, data_class: 12 }
 
 export default function AttackGraph({ graphData }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [isDark, setIsDark] = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsDark(document.documentElement.classList.contains('dark'))
+    check()
+    const obs = new MutationObserver(check)
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    return () => obs.disconnect()
+  }, [])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -20,11 +29,9 @@ export default function AttackGraph({ graphData }: Props) {
     const W = canvas.width = canvas.offsetWidth
     const H = canvas.height = 360
 
-    // Position nodes in a force-like layout
     const nodes = graphData.nodes.slice(0, 20)
     const edges = graphData.edges.slice(0, 30)
 
-    // Layout: email in center, breaches in a ring, data_classes in outer ring
     const emailNode = nodes.find(n => n.type === 'email')
     const breachNodes = nodes.filter(n => n.type === 'breach')
     const dataNodes   = nodes.filter(n => n.type === 'data_class').slice(0, 10)
@@ -44,14 +51,15 @@ export default function AttackGraph({ graphData }: Props) {
       positions[n.id] = { x: cx + Math.cos(dAngle * i + 0.4) * 230, y: cy + Math.sin(dAngle * i + 0.4) * 150 }
     })
 
+    const bgColor = isDark ? '#0a0a0a' : '#faf9f7'
+    const labelColor = isDark ? '#d1d5db' : '#374151'
+
     function draw() {
       ctx!.clearRect(0, 0, W, H)
 
-      // Background
-      ctx!.fillStyle = '#0e1421'
+      ctx!.fillStyle = bgColor
       ctx!.fillRect(0, 0, W, H)
 
-      // Draw edges
       edges.forEach(e => {
         const s = positions[e.source]
         const t = positions[e.target]
@@ -59,19 +67,17 @@ export default function AttackGraph({ graphData }: Props) {
         ctx!.beginPath()
         ctx!.moveTo(s.x, s.y)
         ctx!.lineTo(t.x, t.y)
-        ctx!.strokeStyle = e.label === 'Leaked In' ? '#ff3b5c44' : '#4cc9f044'
+        ctx!.strokeStyle = e.label === 'Leaked In' ? '#f8717144' : '#60a5fa44'
         ctx!.lineWidth = 1
         ctx!.stroke()
       })
 
-      // Draw nodes
       nodes.forEach(n => {
         const pos = positions[n.id]
         if (!pos) return
         const r = NODE_RADIUS[n.type] || 12
         const color = NODE_COLORS[n.type] || '#fff'
 
-        // Glow
         const grad = ctx!.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, r * 2)
         grad.addColorStop(0, `${color}44`)
         grad.addColorStop(1, `${color}00`)
@@ -80,7 +86,6 @@ export default function AttackGraph({ graphData }: Props) {
         ctx!.fillStyle = grad
         ctx!.fill()
 
-        // Node
         ctx!.beginPath()
         ctx!.arc(pos.x, pos.y, r, 0, Math.PI * 2)
         ctx!.fillStyle = `${color}22`
@@ -89,8 +94,7 @@ export default function AttackGraph({ graphData }: Props) {
         ctx!.lineWidth = 1.5
         ctx!.stroke()
 
-        // Label
-        ctx!.fillStyle = n.type === 'email' ? '#00ff9d' : '#ffffff99'
+        ctx!.fillStyle = n.type === 'email' ? '#3b82f6' : labelColor
         ctx!.font = `${n.type === 'email' ? 700 : 400} ${n.type === 'data_class' ? 9 : 11}px 'Space Mono', monospace`
         ctx!.textAlign = 'center'
         ctx!.textBaseline = 'middle'
@@ -100,14 +104,14 @@ export default function AttackGraph({ graphData }: Props) {
     }
 
     draw()
-  }, [graphData])
+  }, [graphData, isDark])
 
   return (
     <div className="relative">
       <div className="flex items-center gap-4 mb-3 text-xs font-mono">
-        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#00ff9d] inline-block" />Your Email</span>
-        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#ff3b5c] inline-block" />Breached Service</span>
-        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#4cc9f0] inline-block" />Data Class</span>
+        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" />Your Email</span>
+        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" />Breached Service</span>
+        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-400 inline-block" />Data Class</span>
       </div>
       <canvas
         ref={canvasRef}

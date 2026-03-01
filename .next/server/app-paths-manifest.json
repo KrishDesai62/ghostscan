@@ -1,20 +1,9 @@
 {
-  "/_not-found": "app/_not-found.js",
-  "/api/auth/otp/verify/route": "app/api/auth/otp/verify/route.js",
-  "/api/auth/otp/send/route": "app/api/auth/otp/send/route.js",
-  "/api/deletion-requests/route": "app/api/deletion-requests/route.js",
-  "/api/legal-assist/route": "app/api/legal-assist/route.js",
-  "/api/internal/purge-expired/route": "app/api/internal/purge-expired/route.js",
-  "/api/password-check/route": "app/api/password-check/route.js",
-  "/api/scans/[id]/legal/route": "app/api/scans/[id]/legal/route.js",
-  "/api/deletion-requests/[id]/route": "app/api/deletion-requests/[id]/route.js",
-  "/api/scans/route": "app/api/scans/route.js",
   "/checker/page": "app/checker/page.js",
-  "/api/screenshot-check/route": "app/api/screenshot-check/route.js",
-  "/api/scan-preview/route": "app/api/scan-preview/route.js",
-  "/report/page": "app/report/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/page": "app/page.js",
   "/password-checker/page": "app/password-checker/page.js",
-  "/verify/page": "app/verify/page.js"
+  "/verify/page": "app/verify/page.js",
+  "/api/auth/otp/send/route": "app/api/auth/otp/send/route.js",
+  "/report/page": "app/report/page.js"
 }

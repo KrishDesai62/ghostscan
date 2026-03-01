@@ -1,4 +1,4 @@
-// File: /Users/krishd/Downloads/ghostscan/src/app/api/password-check/route.ts
+// File: /Users/shrivant/Documents/GitHub/ghostscan/src/app/api/password-check/route.ts
 import * as entry from '../../../../../src/app/api/password-check/route.js'
 import type { NextRequest } from 'next/server.js'
 

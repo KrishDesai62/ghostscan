@@ -1,5 +1,5 @@
 'use client'
-import { ShieldCheck, ShieldAlert, Shield } from 'lucide-react'
+import { ShieldCheck, ShieldAlert } from 'lucide-react'
 
 interface Props {
   scoreBundle: { finalScore: number; level: string; confidence: string; dimensions: any }
@@ -10,80 +10,63 @@ interface Props {
 export default function RiskOverview({ scoreBundle, verified, breachCount }: Props) {
   const { finalScore, level, confidence } = scoreBundle
 
-  const color = level === 'high' ? '#ff3b5c' : level === 'moderate' ? '#ffd166' : '#00ff9d'
-  const bg    = level === 'high' ? '#ff3b5c11' : level === 'moderate' ? '#ffd16611' : '#00ff9d11'
-  const border= level === 'high' ? '#ff3b5c33' : level === 'moderate' ? '#ffd16633' : '#00ff9d33'
+  const color = level === 'high' ? '#ef4444' : level === 'moderate' ? '#f59e0b' : '#3b82f6'
+  const levelClass = level === 'high' ? 'text-red-500 bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/20' : level === 'moderate' ? 'text-amber-500 bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20' : 'text-blue-500 bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20'
 
-  const circumference = 2 * Math.PI * 52
-  const dashOffset    = circumference - (finalScore / 100) * circumference
+  const circumference = 2 * Math.PI * 56
+  const dashOffset = circumference - (finalScore / 100) * circumference
+
+  const labels: Record<string, string> = { takeover: 'Account Takeover', theft: 'Identity Theft', phishing: 'Phishing', exposure: 'Exposure' }
 
   return (
-    <div className="gs-card p-6 flex flex-col items-center" style={{ borderColor: border, backgroundColor: `${bg}40` }}>
-      {/* Score ring */}
-      <div className="relative w-36 h-36 mb-4">
-        <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="52" fill="none" stroke="#1e2d45" strokeWidth="8" />
-          <circle
-            cx="60" cy="60" r="52" fill="none"
-            stroke={color} strokeWidth="8"
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={dashOffset}
+    <div className={`gs-card p-8 flex flex-col items-center`}>
+      <div className="relative w-44 h-44 mb-6">
+        <svg className="w-full h-full -rotate-90" viewBox="0 0 128 128">
+          <circle cx="64" cy="64" r="56" fill="none" stroke="var(--card-border)" strokeWidth="8" />
+          <circle cx="64" cy="64" r="56" fill="none" stroke={color} strokeWidth="8" strokeLinecap="round"
+            strokeDasharray={circumference} strokeDashoffset={dashOffset}
             style={{ transition: 'stroke-dashoffset 1.2s ease' }}
-            filter={`drop-shadow(0 0 6px ${color}88)`}
+            filter={`drop-shadow(0 0 6px ${color}66)`}
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-4xl font-extrabold font-mono leading-none" style={{ color }}>{finalScore}</span>
-          <span className="text-xs text-gray-500 font-mono">/100</span>
+          <span className="text-5xl font-extrabold font-mono leading-none" style={{ color }}>{finalScore}</span>
+          <span className="text-sm text-[var(--text-muted)] font-mono mt-1">/100</span>
         </div>
       </div>
 
-      {/* Level badge */}
-      <div className="px-3 py-1 rounded-full text-sm font-bold border mb-3 font-mono uppercase tracking-widest" style={{ color, borderColor: border, backgroundColor: bg }}>
+      <div className={`px-4 py-1.5 rounded-full text-base font-bold border mb-4 font-mono uppercase tracking-widest ${levelClass}`}>
         {level} Risk
       </div>
 
-      {/* Verified badge */}
       {verified ? (
-        <div className="flex items-center gap-1.5 bg-[#00ff9d11] border border-[#00ff9d33] text-[#00ff9d] text-xs font-bold px-3 py-1.5 rounded-full mb-3">
-          <ShieldCheck className="w-3.5 h-3.5" /> VERIFIED REPORT
+        <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm font-bold px-4 py-2 rounded-full mb-5">
+          <ShieldCheck className="w-4 h-4" /> Verified Report
         </div>
       ) : (
-        <div className="flex items-center gap-1.5 bg-[#ffd16611] border border-[#ffd16633] text-[#ffd166] text-xs px-3 py-1.5 rounded-full mb-3">
-          <ShieldAlert className="w-3.5 h-3.5" /> LIMITED REPORT
+        <div className="flex items-center gap-2 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-600 dark:text-amber-400 text-sm px-4 py-2 rounded-full mb-5">
+          <ShieldAlert className="w-4 h-4" /> Limited Report
         </div>
       )}
 
-      {/* Confidence + breakdown */}
-      <div className="w-full space-y-2 mt-2">
-        <div className="flex justify-between text-xs">
-          <span className="text-gray-500">Confidence</span>
-          <span className={`font-mono font-bold ${confidence === 'high' ? 'text-[#00ff9d]' : confidence === 'medium' ? 'text-[#ffd166]' : 'text-gray-400'}`}>
+      <div className="w-full space-y-3">
+        <div className="flex justify-between text-sm">
+          <span className="text-[var(--text-muted)]">Confidence</span>
+          <span className={`font-mono font-bold ${confidence === 'high' ? 'text-blue-500' : confidence === 'medium' ? 'text-amber-500' : 'text-[var(--text-muted)]'}`}>
             {confidence.toUpperCase()}
           </span>
         </div>
         {Object.entries(scoreBundle.dimensions).map(([key, val]) => {
           const v = val as number
-          const labels: Record<string, string> = { takeover: 'Account Takeover', theft: 'Identity Theft', phishing: 'Phishing Risk', exposure: 'Public Exposure' }
-          const explainer: Record<string, string> = {
-            takeover: 'Risk of account login compromise.',
-            theft: 'Risk of personal identity misuse.',
-            phishing: 'Risk of targeted social-engineering scams.',
-            exposure: 'Risk from publicly discoverable personal data.',
-          }
+          const barColor = v > 65 ? 'bg-red-400' : v > 35 ? 'bg-amber-400' : 'bg-blue-400'
           return (
             <div key={key}>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-gray-500">{labels[key]}</span>
-                <span className="font-mono text-gray-300">{v}</span>
+              <div className="flex justify-between text-sm mb-1.5">
+                <span className="text-[var(--text-muted)]">{labels[key] || key}</span>
+                <span className="font-mono font-bold">{v}</span>
               </div>
-              <div className="text-[11px] text-gray-600 mb-1.5 leading-snug">{explainer[key]}</div>
-              <div className="h-1 bg-[#1e2d45] rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-700"
-                  style={{ width: `${v}%`, backgroundColor: v > 65 ? '#ff3b5c' : v > 35 ? '#ffd166' : '#00ff9d' }}
-                />
+              <div className="h-2 bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden">
+                <div className={`h-full rounded-full transition-all duration-700 ${barColor}`} style={{ width: `${v}%` }} />
               </div>
             </div>
           )

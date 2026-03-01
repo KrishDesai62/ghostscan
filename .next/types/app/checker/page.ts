@@ -1,4 +1,4 @@
-// File: /Users/krishd/Downloads/ghostscan/src/app/checker/page.tsx
+// File: /Users/shrivant/Documents/GitHub/ghostscan/src/app/checker/page.tsx
 import * as entry from '../../../../src/app/checker/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

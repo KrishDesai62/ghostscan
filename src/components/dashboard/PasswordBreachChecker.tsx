@@ -46,23 +46,23 @@ export default function PasswordBreachChecker() {
   return (
     <div className="gs-card p-5 space-y-4">
       <div>
-        <h3 className="text-sm font-semibold text-gray-200">Password Breach Detector</h3>
-        <p className="text-xs text-gray-500 mt-1">
+        <h3 className="text-sm font-semibold text-[var(--text)]">Password Breach Detector</h3>
+        <p className="text-xs text-[var(--text-muted)] mt-1">
           Checks if a password has appeared in known breach datasets using HIBP Pwned Passwords.
         </p>
       </div>
 
       <div className="space-y-2">
-        <label className="block text-xs text-gray-500 font-mono">Password to test</label>
+        <label className="block text-xs text-[var(--text-muted)] font-mono">Password to test</label>
         <div className="flex items-center gap-2">
-          <div className="flex-1 flex items-center gap-2 bg-[#0a111d] border border-[#1e2d45] rounded-lg px-3 py-2.5">
-            <KeyRound className="w-4 h-4 text-[#4cc9f0]" />
+          <div className="flex-1 flex items-center gap-2 bg-[var(--card-bg)] border border-black/[0.06] dark:border-white/[0.06] rounded-lg px-3 py-2.5">
+            <KeyRound className="w-4 h-4 text-blue-500" />
             <input
               type={show ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter password to check"
-              className="flex-1 bg-transparent text-sm text-gray-200 placeholder:text-gray-600 outline-none"
+              className="flex-1 bg-transparent text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] outline-none"
               autoComplete="off"
               spellCheck={false}
             />
@@ -86,33 +86,33 @@ export default function PasswordBreachChecker() {
         {loading ? 'Checking...' : 'Check Password Breach'}
       </button>
 
-      {error && <p className="text-xs text-[#ff3b5c]">{error}</p>}
+      {error && <p className="text-xs text-red-500">{error}</p>}
 
       {result && (
-        <div className="border border-[#1e2d45] rounded-lg p-4 bg-[#0a111d] space-y-3">
+        <div className="border border-black/[0.06] dark:border-white/[0.06] rounded-lg p-4 bg-[var(--card-bg)] space-y-3">
           <div className="flex items-center gap-2">
             {result.breached ? (
-              <AlertTriangle className="w-4 h-4 text-[#ff3b5c]" />
+              <AlertTriangle className="w-4 h-4 text-red-500" />
             ) : (
-              <CheckCircle2 className="w-4 h-4 text-[#00ff9d]" />
+              <CheckCircle2 className="w-4 h-4 text-red-500" />
             )}
-            <span className="text-sm font-semibold text-gray-100">
+            <span className="text-sm font-semibold text-[var(--text)]">
               {result.breached ? 'Password appears in breach datasets' : 'No match found in known breach datasets'}
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-            <div className="bg-[#080f1a] border border-[#1e2d45] rounded px-2 py-1.5">
-              <span className="text-gray-500">Risk</span>
-              <div className="font-mono mt-0.5 uppercase text-gray-200">{result.risk}</div>
+            <div className="bg-black/5 dark:bg-white/5 border border-black/[0.06] dark:border-white/[0.06] rounded px-2 py-1.5">
+              <span className="text-[var(--text-muted)]">Risk</span>
+              <div className="font-mono mt-0.5 uppercase text-[var(--text)]">{result.risk}</div>
             </div>
-            <div className="bg-[#080f1a] border border-[#1e2d45] rounded px-2 py-1.5">
-              <span className="text-gray-500">Breach Count</span>
-              <div className="font-mono mt-0.5 text-gray-200">{result.breachCount.toLocaleString()}</div>
+            <div className="bg-black/5 dark:bg-white/5 border border-black/[0.06] dark:border-white/[0.06] rounded px-2 py-1.5">
+              <span className="text-[var(--text-muted)]">Breach Count</span>
+              <div className="font-mono mt-0.5 text-[var(--text)]">{result.breachCount.toLocaleString()}</div>
             </div>
           </div>
 
-          <p className="text-xs text-gray-500">{result.note}</p>
+          <p className="text-xs text-[var(--text-muted)]">{result.note}</p>
         </div>
       )}
     </div>

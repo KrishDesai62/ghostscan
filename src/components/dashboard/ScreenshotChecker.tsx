@@ -75,9 +75,9 @@ export default function ScreenshotChecker() {
     if (!result) return null
     const isHigh = result.scamRisk === 'high' || result.breachRisk === 'high'
     const isMedium = result.scamRisk === 'medium' || result.breachRisk === 'medium'
-    if (isHigh) return { color: 'text-[#ff3b5c] border-[#ff3b5c33] bg-[#ff3b5c11]', label: 'High Attention' }
-    if (isMedium) return { color: 'text-[#ffd166] border-[#ffd16633] bg-[#ffd16611]', label: 'Review Carefully' }
-    return { color: 'text-[#00ff9d] border-[#00ff9d33] bg-[#00ff9d11]', label: 'Low Risk Signals' }
+    if (isHigh) return { color: 'text-red-500 border-[#f8717133] bg-[#f8717111]', label: 'High Attention' }
+    if (isMedium) return { color: 'text-amber-500 border-[#fbbf2433] bg-[#fbbf2411]', label: 'Review Carefully' }
+    return { color: 'text-red-500 border-red-500/20 bg-red-500/[0.07]', label: 'Low Risk Signals' }
   }, [result])
 
   async function onPickFile(selected: File | null) {
@@ -174,34 +174,34 @@ export default function ScreenshotChecker() {
   return (
     <div className="gs-card p-5 space-y-4">
       <div>
-        <h3 className="text-sm font-semibold text-gray-200">Screenshot Scam / Breach Checker</h3>
-        <p className="text-xs text-gray-500 mt-1">
+        <h3 className="text-sm font-semibold text-[var(--text)]">Screenshot Scam / Breach Checker</h3>
+        <p className="text-xs text-[var(--text-muted)] mt-1">
           Upload a screenshot of an email, message, pop-up, or site. GhostScan flags scam cues and breach-related language.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="space-y-3">
-          <label className="block text-xs text-gray-500 font-mono">Screenshot upload</label>
-          <label className="border border-[#1e2d45] rounded-lg p-4 bg-[#0a111d] cursor-pointer hover:border-[#2f466a] transition-colors block">
+          <label className="block text-xs text-[var(--text-muted)] font-mono">Screenshot upload</label>
+          <label className="border border-black/[0.06] dark:border-white/[0.06] rounded-lg p-4 bg-[var(--card-bg)] cursor-pointer hover:border-[var(--accent)] transition-colors block">
             <input
               type="file"
               accept="image/*"
               className="hidden"
               onChange={(e) => onPickFile(e.target.files?.[0] || null)}
             />
-            <div className="flex items-center gap-2 text-sm text-gray-300">
-              <Upload className="w-4 h-4 text-[#4cc9f0]" />
+            <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
+              <Upload className="w-4 h-4 text-blue-500" />
               {file ? file.name : 'Choose screenshot image'}
             </div>
           </label>
 
-          <label className="block text-xs text-gray-500 font-mono">Optional text hint (improves fallback)</label>
+          <label className="block text-xs text-[var(--text-muted)] font-mono">Optional text hint (improves fallback)</label>
           <textarea
             value={hintText}
             onChange={(e) => setHintText(e.target.value)}
             placeholder="Paste suspicious text, sender details, or link text here..."
-            className="w-full min-h-[100px] bg-[#0a111d] border border-[#1e2d45] rounded-lg p-3 text-sm text-gray-200 placeholder:text-gray-600 outline-none focus:border-[#3a567f]"
+            className="w-full min-h-[100px] bg-[var(--card-bg)] border border-black/[0.06] dark:border-white/[0.06] rounded-lg p-3 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] outline-none focus:border-[var(--accent)]"
           />
 
           <button
@@ -213,36 +213,36 @@ export default function ScreenshotChecker() {
             {loading ? 'Analyzing...' : 'Analyze Screenshot'}
           </button>
 
-          {error && <p className="text-xs text-[#ff3b5c]">{error}</p>}
-          {ocrLoading && <p className="text-xs text-[#4cc9f0]">Running local OCR...</p>}
-          {ocrError && <p className="text-xs text-[#ffd166]">{ocrError}</p>}
+          {error && <p className="text-xs text-red-500">{error}</p>}
+          {ocrLoading && <p className="text-xs text-blue-500">Running local OCR...</p>}
+          {ocrError && <p className="text-xs text-amber-500">{ocrError}</p>}
           {ocrText && (
-            <div className="bg-[#080f1a] border border-[#1e2d45] rounded-lg p-2.5">
-              <p className="text-xs text-gray-500 mb-1 font-mono">OCR extracted text preview</p>
-              <pre className="text-[11px] text-gray-300 whitespace-pre-wrap max-h-28 overflow-y-auto">{ocrText.slice(0, 800)}</pre>
+            <div className="bg-black/5 dark:bg-white/5 border border-black/[0.06] dark:border-white/[0.06] rounded-lg p-2.5">
+              <p className="text-xs text-[var(--text-muted)] mb-1 font-mono">OCR extracted text preview</p>
+              <pre className="text-[11px] text-[var(--text-muted)] whitespace-pre-wrap max-h-28 overflow-y-auto">{ocrText.slice(0, 800)}</pre>
             </div>
           )}
         </div>
 
-        <div className="border border-[#1e2d45] rounded-lg bg-[#0a111d] min-h-[220px] flex items-center justify-center overflow-hidden">
+        <div className="border border-black/[0.06] dark:border-white/[0.06] rounded-lg bg-[var(--card-bg)] min-h-[220px] flex items-center justify-center overflow-hidden">
           {preview ? (
             <img src={preview} alt="Screenshot preview" className="max-h-[320px] w-auto object-contain" />
           ) : (
-            <div className="text-xs text-gray-600 font-mono">No screenshot selected</div>
+            <div className="text-xs text-[var(--text-muted)] font-mono">No screenshot selected</div>
           )}
         </div>
       </div>
 
       {result && (
-        <div className="border border-[#1e2d45] rounded-lg p-4 bg-[#0a111d] space-y-3">
+        <div className="border border-black/[0.06] dark:border-white/[0.06] rounded-lg p-4 bg-[var(--card-bg)] space-y-3">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-2">
               {(result.scamRisk === 'high' || result.breachRisk === 'high') ? (
-                <ShieldAlert className="w-4 h-4 text-[#ff3b5c]" />
+                <ShieldAlert className="w-4 h-4 text-red-500" />
               ) : (
-                <ShieldCheck className="w-4 h-4 text-[#00ff9d]" />
+                <ShieldCheck className="w-4 h-4 text-red-500" />
               )}
-              <span className="text-sm font-semibold text-gray-100">
+              <span className="text-sm font-semibold text-[var(--text)]">
                 Verdict: {result.verdict.replaceAll('_', ' ')}
               </span>
             </div>
@@ -252,34 +252,34 @@ export default function ScreenshotChecker() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-            <div className="bg-[#080f1a] border border-[#1e2d45] rounded px-2 py-1.5">
-              <span className="text-gray-500">Scam Risk</span>
-              <div className="font-mono mt-0.5 uppercase text-gray-200">{result.scamRisk}</div>
+            <div className="bg-black/5 dark:bg-white/5 border border-black/[0.06] dark:border-white/[0.06] rounded px-2 py-1.5">
+              <span className="text-[var(--text-muted)]">Scam Risk</span>
+              <div className="font-mono mt-0.5 uppercase text-[var(--text)]">{result.scamRisk}</div>
             </div>
-            <div className="bg-[#080f1a] border border-[#1e2d45] rounded px-2 py-1.5">
-              <span className="text-gray-500">Breach Risk</span>
-              <div className="font-mono mt-0.5 uppercase text-gray-200">{result.breachRisk}</div>
+            <div className="bg-black/5 dark:bg-white/5 border border-black/[0.06] dark:border-white/[0.06] rounded px-2 py-1.5">
+              <span className="text-[var(--text-muted)]">Breach Risk</span>
+              <div className="font-mono mt-0.5 uppercase text-[var(--text)]">{result.breachRisk}</div>
             </div>
-            <div className="bg-[#080f1a] border border-[#1e2d45] rounded px-2 py-1.5">
-              <span className="text-gray-500">Confidence</span>
-              <div className="font-mono mt-0.5 text-gray-200">{Math.round((result.confidence || 0) * 100)}%</div>
+            <div className="bg-black/5 dark:bg-white/5 border border-black/[0.06] dark:border-white/[0.06] rounded px-2 py-1.5">
+              <span className="text-[var(--text-muted)]">Confidence</span>
+              <div className="font-mono mt-0.5 text-[var(--text)]">{Math.round((result.confidence || 0) * 100)}%</div>
             </div>
-            <div className="bg-[#080f1a] border border-[#1e2d45] rounded px-2 py-1.5">
-              <span className="text-gray-500">Analysis Source</span>
-              <div className="font-mono mt-0.5 text-gray-200">{result.source || 'unknown'}</div>
+            <div className="bg-black/5 dark:bg-white/5 border border-black/[0.06] dark:border-white/[0.06] rounded px-2 py-1.5">
+              <span className="text-[var(--text-muted)]">Analysis Source</span>
+              <div className="font-mono mt-0.5 text-[var(--text)]">{result.source || 'unknown'}</div>
             </div>
           </div>
 
           <div>
-            <p className="text-xs text-gray-500 mb-1">Why flagged</p>
-            <ul className="text-sm text-gray-300 space-y-1">
+            <p className="text-xs text-[var(--text-muted)] mb-1">Why flagged</p>
+            <ul className="text-sm text-[var(--text-muted)] space-y-1">
               {result.reasons?.map((r, i) => <li key={`${r}-${i}`}>• {r}</li>)}
             </ul>
           </div>
 
           <div>
-            <p className="text-xs text-gray-500 mb-1">Recommended actions</p>
-            <ul className="text-sm text-gray-300 space-y-1">
+            <p className="text-xs text-[var(--text-muted)] mb-1">Recommended actions</p>
+            <ul className="text-sm text-[var(--text-muted)] space-y-1">
               {result.actionItems?.map((a, i) => <li key={`${a}-${i}`}>• {a}</li>)}
             </ul>
           </div>

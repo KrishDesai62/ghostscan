@@ -15,12 +15,13 @@
     "@supabase/supabase-js": "^2.38.0",
     "@upstash/ratelimit": "^1.0.0",
     "@upstash/redis": "^1.25.0",
+    "framer-motion": "^12.34.3",
+    "lucide-react": "^0.396.0",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
     "recharts": "^2.10.1",
-    "zod": "^3.22.4",
-    "lucide-react": "^0.396.0"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.1.5",

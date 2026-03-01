@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Mail, ShieldCheck, ChevronRight, ArrowLeft, Loader2, CheckCircle2, Eye, AlertCircle, Camera, X } from 'lucide-react'
 import { PRIVACY_LAW_PROFILES, type ResidencyState } from '@/lib/us-privacy-laws'
 
@@ -416,52 +417,67 @@ export default function VerifyPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-8 h-8 bg-[#00ff9d] rounded-lg flex items-center justify-center">
-            <Eye className="w-4 h-4 text-[#080b12]" />
+          <div className="w-8 h-8 bg-[var(--accent)] rounded-lg flex items-center justify-center">
+            <Eye className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-lg">Ghost<span className="text-[#00ff9d]">Scan</span></span>
+          <span className="font-bold text-lg">Ghost<span className="text-[var(--accent)]">Scan</span></span>
         </div>
 
         {/* Step Indicators */}
         <div className="flex items-center justify-center gap-2 mb-8">
           {(['email','otp','consent','liveness','hygiene','scanning'] as Step[]).map((s, i) => (
             <div key={s} className={`h-1 rounded-full transition-all duration-300 ${
-              s === step ? 'w-8 bg-[#00ff9d]' :
-              ['email','otp','consent','liveness','hygiene','scanning'].indexOf(step) > i ? 'w-4 bg-[#00ff9d66]' :
-              'w-4 bg-[#1e2d45]'
+              s === step ? 'w-8 bg-[var(--accent)] animate-pulse' :
+              ['email','otp','consent','liveness','hygiene','scanning'].indexOf(step) > i ? 'w-4 bg-[var(--accent)]/40' :
+              'w-4 bg-gray-200 dark:bg-white/10'
             }`} />
           ))}
         </div>
 
+        <AnimatePresence mode="wait">
         {/* ─── EMAIL STEP ─────────────────────────────────── */}
         {step === 'email' && (
-          <div className="gs-card p-8 animate-fadeInUp">
-            <Mail className="w-10 h-10 text-[#00ff9d] mb-4" />
+          <motion.div
+            key="email"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="gs-card p-8"
+          >
+            <Mail className="w-10 h-10 text-[var(--accent)] mb-4" />
             <h2 className="text-2xl font-bold mb-2">Analyze Your Exposure</h2>
-            <p className="text-gray-400 text-sm mb-6">Enter your email to scan for breaches and generate your risk report.</p>
+            <p className="text-[var(--text-muted)] text-sm mb-6">Enter your email to scan for breaches and generate your risk report.</p>
             <form onSubmit={handleEmailSubmit} className="space-y-4">
               <input
                 type="email" required autoFocus
                 placeholder="your@email.com"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full bg-[#080b12] border border-[#1e2d45] rounded-lg px-4 py-3 font-mono text-sm focus:outline-none focus:border-[#00ff9d55] transition-colors"
+                className="w-full bg-black/[0.02] dark:bg-white/[0.05] border border-black/[0.06] dark:border-white/[0.06] rounded-lg px-4 py-3 font-mono text-sm focus:outline-none focus:border-[var(--accent)]/50 transition-colors"
               />
               <button type="submit" className="w-full gs-btn-primary flex items-center justify-center gap-2">
                 Continue <ChevronRight className="w-4 h-4" />
               </button>
             </form>
-          </div>
+          </motion.div>
         )}
 
         {/* ─── OTP STEP ──────────────────────────────────── */}
         {step === 'otp' && (
-          <div className="gs-card p-8 animate-fadeInUp">
-            <ShieldCheck className="w-10 h-10 text-[#00ff9d] mb-4" />
+          <motion.div
+            key="otp"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="gs-card p-8"
+          >
+            <ShieldCheck className="w-10 h-10 text-[var(--accent)] mb-4" />
             <h2 className="text-2xl font-bold mb-1">Verify Your Email</h2>
-            <p className="text-gray-400 text-sm mb-1">Enter the OTP code sent to</p>
-            <p className="text-[#00ff9d] font-mono text-sm mb-6">{email}</p>
-            <div className="bg-[#ffd16611] border border-[#ffd16633] rounded-lg p-3 mb-5 text-xs text-[#ffd166] font-mono">
+            <p className="text-[var(--text-muted)] text-sm mb-1">Enter the OTP code sent to</p>
+            <p className="text-[var(--accent)] font-mono text-sm mb-6">{email}</p>
+            <div className="bg-[#fbbf2411] border border-[#fbbf2433] rounded-lg p-3 mb-5 text-xs text-amber-500 font-mono">
               {otpMode === 'server'
                 ? '📨 Using Supabase OTP. Enter the 8-digit code from your email.'
                 : <>🎭 Demo mode fallback: use code <strong>12345678</strong></>}
@@ -472,9 +488,9 @@ export default function VerifyPage() {
                 placeholder="00000000"
                 value={otp}
                 onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 8))}
-                className="w-full bg-[#080b12] border border-[#1e2d45] rounded-lg px-4 py-3 font-mono text-2xl text-center tracking-[0.4em] focus:outline-none focus:border-[#00ff9d55] transition-colors"
+                className="w-full bg-black/[0.02] dark:bg-white/[0.05] border border-black/[0.06] dark:border-white/[0.06] rounded-lg px-4 py-3 font-mono text-2xl text-center tracking-[0.4em] focus:outline-none focus:border-[var(--accent)]/50 transition-colors"
               />
-              {otpError && <p className="text-[#ff3b5c] text-xs font-mono">{otpError}</p>}
+              {otpError && <p className="text-red-500 text-xs font-mono">{otpError}</p>}
               <button type="submit" className="w-full gs-btn-primary flex items-center justify-center gap-2">
                 Verify <ChevronRight className="w-4 h-4" />
               </button>
@@ -490,20 +506,27 @@ export default function VerifyPage() {
                 <ArrowLeft className="w-3.5 h-3.5" /> Back
               </button>
             </form>
-          </div>
+          </motion.div>
         )}
 
         {/* ─── CONSENT STEP ─────────────────────────────── */}
         {step === 'consent' && (
-          <div className="gs-card p-8 animate-fadeInUp">
+          <motion.div
+            key="consent"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="gs-card p-8"
+          >
             <h2 className="text-2xl font-bold mb-2">Privacy Consent</h2>
-            <p className="text-gray-400 text-sm mb-6">GhostScan requires your explicit consent before processing any data.</p>
+            <p className="text-[var(--text-muted)] text-sm mb-6">GhostScan requires your explicit consent before processing any data.</p>
             <div className="mb-5">
-              <label className="text-xs text-gray-500 font-mono block mb-2">Residency (for legal template defaults)</label>
+              <label className="text-xs text-[var(--text-muted)] font-mono block mb-2">Residency (for legal template defaults)</label>
               <select
                 value={residencyState}
                 onChange={(e) => setResidencyState(e.target.value as ResidencyState)}
-                className="w-full bg-[#080b12] border border-[#1e2d45] rounded-lg px-3 py-2.5 text-sm text-gray-300 outline-none focus:border-[#00ff9d55]"
+                className="w-full bg-black/[0.02] dark:bg-white/[0.05] border border-black/[0.06] dark:border-white/[0.06] rounded-lg px-3 py-2.5 text-sm text-[var(--text-muted)] outline-none focus:border-[var(--accent)]/50"
               >
                 {PRIVACY_LAW_PROFILES.map((profile) => (
                   <option key={profile.state} value={profile.state}>
@@ -523,14 +546,14 @@ export default function VerifyPage() {
                     onClick={() => setConsent(c => ({ ...c, [item.key]: !c[item.key as keyof typeof c] }))}
                     className={`w-5 h-5 mt-0.5 rounded border-2 flex-shrink-0 flex items-center justify-center transition-colors cursor-pointer ${
                       consent[item.key as keyof typeof consent] 
-                        ? 'bg-[#00ff9d] border-[#00ff9d]' 
-                        : 'border-[#1e2d45] group-hover:border-[#00ff9d55]'
+                        ? 'bg-[var(--accent)] border-[var(--accent)]' 
+                        : 'border-black/[0.06] dark:border-white/[0.06] group-hover:border-[var(--accent)]/50'
                     }`}
                   >
-                    {consent[item.key as keyof typeof consent] && <CheckCircle2 className="w-3.5 h-3.5 text-[#080b12]" />}
+                    {consent[item.key as keyof typeof consent] && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
                   </div>
-                  <span className="text-sm text-gray-400 leading-relaxed">
-                    {item.required && <span className="text-[#ff3b5c] mr-1">*</span>}
+                  <span className="text-sm text-[var(--text-muted)] leading-relaxed">
+                    {item.required && <span className="text-red-500 mr-1">*</span>}
                     {item.label}
                   </span>
                 </label>
@@ -543,31 +566,38 @@ export default function VerifyPage() {
             >
               Continue <ChevronRight className="w-4 h-4" />
             </button>
-          </div>
+          </motion.div>
         )}
 
         {/* ─── LIVENESS STEP ────────────────────────────── */}
         {step === 'liveness' && (
-          <div className="gs-card p-8 animate-fadeInUp">
-            <Camera className="w-10 h-10 text-[#4cc9f0] mb-4" />
+          <motion.div
+            key="liveness"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="gs-card p-8"
+          >
+            <Camera className="w-10 h-10 text-blue-500 mb-4" />
             <h2 className="text-2xl font-bold mb-1">Liveness Check</h2>
-            <p className="text-gray-400 text-sm mb-4">Proves you are live with staged pose checks. No images are stored.</p>
+            <p className="text-[var(--text-muted)] text-sm mb-4">Proves you are live with staged pose checks. No images are stored.</p>
 
-            <div className="relative aspect-video bg-[#080b12] rounded-lg overflow-hidden mb-4 border border-[#1e2d45]">
+            <div className="relative aspect-video bg-black/[0.02] dark:bg-white/[0.03] rounded-lg overflow-hidden mb-4 border border-black/[0.06] dark:border-white/[0.06]">
               <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover scale-x-[-1]" />
               {!livenessDone && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50">
-                  <div className="text-[#4cc9f0] text-sm font-bold font-mono text-center px-4">{livenessHint}</div>
-                  <div className="mt-2 text-[11px] text-gray-300 font-mono">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30">
+                  <div className="text-blue-500 text-sm font-bold font-mono text-center px-4">{livenessHint}</div>
+                  <div className="mt-2 text-[11px] text-[var(--text-muted)] font-mono">
                     Step {Math.min(livenessStageIdx + 1, LIVENESS_FLOW.length)} / {LIVENESS_FLOW.length}
                   </div>
                 </div>
               )}
               {livenessDone && (
-                <div className="absolute inset-0 flex items-center justify-center bg-[#00ff9d11]">
+                <div className="absolute inset-0 flex items-center justify-center bg-[var(--accent)]/[0.07]">
                   <div className="text-center">
-                    <CheckCircle2 className="w-12 h-12 text-[#00ff9d] mx-auto mb-2" />
-                    <p className="text-[#00ff9d] font-bold">Liveness Verified!</p>
+                    <CheckCircle2 className="w-12 h-12 text-[var(--accent)] mx-auto mb-2" />
+                    <p className="text-[var(--accent)] font-bold">Liveness Verified!</p>
                   </div>
                 </div>
               )}
@@ -579,24 +609,31 @@ export default function VerifyPage() {
               </button>
             )}
             {livenessMode === 'motion' && !livenessDone && (
-              <div className="mb-3 text-xs text-[#ffd166] bg-[#ffd16611] border border-[#ffd16633] rounded-lg p-2.5">
+              <div className="mb-3 text-xs text-amber-500 bg-[#fbbf2411] border border-[#fbbf2433] rounded-lg p-2.5">
                 Using motion fallback mode for liveness on this browser. Follow the prompts and hold each step until complete.
               </div>
             )}
             <button onClick={skipLiveness} className="w-full gs-btn-ghost text-sm flex items-center justify-center gap-2">
               <X className="w-3.5 h-3.5" /> Skip (limited report)
             </button>
-          </div>
+          </motion.div>
         )}
 
         {/* ─── HYGIENE STEP ─────────────────────────────── */}
         {step === 'hygiene' && (
-          <div className="gs-card p-8 animate-fadeInUp">
+          <motion.div
+            key="hygiene"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="gs-card p-8"
+          >
             <h2 className="text-2xl font-bold mb-1">Security Habits</h2>
-            <p className="text-gray-400 text-sm mb-6">These affect your risk score calculation.</p>
+            <p className="text-[var(--text-muted)] text-sm mb-6">These affect your risk score calculation.</p>
 
             {!livenessPassed && (
-              <div className="bg-[#ffd16611] border border-[#ffd16633] rounded-lg p-3 mb-5 text-xs text-[#ffd166] flex items-center gap-2">
+              <div className="bg-[#fbbf2411] border border-[#fbbf2433] rounded-lg p-3 mb-5 text-xs text-amber-500 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 Limited report — complete liveness check for full Verified dashboard
               </div>
@@ -613,15 +650,15 @@ export default function VerifyPage() {
                     onClick={() => setHygiene(h => ({ ...h, [item.key]: !h[item.key as keyof HygieneInputs] }))}
                     className={`w-5 h-5 mt-0.5 rounded border-2 flex-shrink-0 flex items-center justify-center transition-colors cursor-pointer ${
                       hygiene[item.key as keyof HygieneInputs]
-                        ? item.danger ? 'bg-[#ff3b5c] border-[#ff3b5c]' : 'bg-[#00ff9d] border-[#00ff9d]'
-                        : 'border-[#1e2d45] group-hover:border-[#00ff9d55]'
+                        ? item.danger ? 'bg-red-500 border-red-400' : 'bg-[var(--accent)] border-[var(--accent)]'
+                        : 'border-black/[0.06] dark:border-white/[0.06] group-hover:border-[var(--accent)]/50'
                     }`}
                   >
-                    {hygiene[item.key as keyof HygieneInputs] && <CheckCircle2 className="w-3.5 h-3.5 text-[#080b12]" />}
+                    {hygiene[item.key as keyof HygieneInputs] && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
                   </div>
                   <div>
-                    <div className="text-sm text-white">{item.label}</div>
-                    <div className="text-xs text-gray-500">{item.hint}</div>
+                    <div className="text-sm">{item.label}</div>
+                    <div className="text-xs text-[var(--text-muted)]">{item.hint}</div>
                   </div>
                 </label>
               ))}
@@ -630,22 +667,30 @@ export default function VerifyPage() {
             <button onClick={runScan} className="w-full gs-btn-primary flex items-center justify-center gap-2">
               Run Scan <ChevronRight className="w-4 h-4" />
             </button>
-          </div>
+          </motion.div>
         )}
 
         {/* ─── SCANNING STEP ────────────────────────────── */}
         {step === 'scanning' && (
-          <div className="gs-card p-8 animate-fadeInUp">
+          <motion.div
+            key="scanning"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="gs-card p-8"
+          >
             <div className="flex items-center gap-3 mb-6">
-              <Loader2 className="w-6 h-6 text-[#00ff9d] animate-spin" />
+              <Loader2 className="w-6 h-6 text-[var(--accent)] animate-spin" />
               <h2 className="text-xl font-bold">Scanning...</h2>
             </div>
 
             {/* Progress bar */}
-            <div className="h-1 bg-[#1e2d45] rounded-full mb-6 overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-[#00ff9d] to-[#4cc9f0] rounded-full transition-all duration-500"
-                style={{ width: `${scanProgress}%` }}
+            <div className="h-1 bg-gray-200 dark:bg-white/10 rounded-full mb-6 overflow-hidden">
+              <motion.div
+                className="h-full bg-[var(--accent)] rounded-full"
+                animate={{ width: `${scanProgress}%` }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               />
             </div>
 
@@ -664,11 +709,12 @@ export default function VerifyPage() {
               ))}
             </div>
 
-            <div className="mt-6 text-xs text-gray-600 font-mono">
+            <div className="mt-6 text-xs text-[var(--text-muted)] font-mono">
               No face images stored · Memory only · Encrypted in transit
             </div>
-          </div>
+          </motion.div>
         )}
+        </AnimatePresence>
       </div>
     </main>
   )
@@ -717,9 +763,9 @@ function buildDemoScanResult(email: string, verified: boolean, hygiene: HygieneI
     },
     graphData: {
       nodes: [
-        { id: 'email', label: email.split('@')[0], type: 'email', color: '#00ff9d' },
-        ...breaches.map(b => ({ id: b.breach_name, label: b.breach_name, type: 'breach', color: '#ff3b5c' })),
-        ...Array.from(new Set(breaches.flatMap(b => b.data_classes))).map(dc => ({ id: dc, label: dc, type: 'data_class', color: '#4cc9f0' })),
+        { id: 'email', label: email.split('@')[0], type: 'email', color: '#ef4444' },
+        ...breaches.map(b => ({ id: b.breach_name, label: b.breach_name, type: 'breach', color: '#f87171' })),
+        ...Array.from(new Set(breaches.flatMap(b => b.data_classes))).map(dc => ({ id: dc, label: dc, type: 'data_class', color: '#60a5fa' })),
       ],
       edges: [
         ...breaches.map(b => ({ source: 'email', target: b.breach_name, label: 'Leaked In' })),
