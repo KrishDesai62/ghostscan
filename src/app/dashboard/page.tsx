@@ -3,9 +3,6 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Shield, AlertTriangle, TrendingUp, Eye, Zap, Mail, Trash2, Clock, ChevronRight, ShieldCheck, Info, KeyRound, FileText } from 'lucide-react'
 import RiskOverview from '@/components/dashboard/RiskOverview'
-import RadarChart from '@/components/dashboard/RadarChart'
-import TimelineChart from '@/components/dashboard/TimelineChart'
-import AttackGraph from '@/components/dashboard/AttackGraph'
 import MitigationSimulator from '@/components/dashboard/MitigationSimulator'
 import DeletionCenter from '@/components/deletion/DeletionCenter'
 import { getPrivacyLawProfile, type ResidencyState } from '@/lib/us-privacy-laws'
@@ -17,7 +14,6 @@ export default function DashboardPage() {
   const [email, setEmail] = useState('')
   const [verified, setVerified] = useState(false)
   const [showDeletion, setShowDeletion] = useState(false)
-  const [activeTab, setActiveTab] = useState<'overview' | 'graph' | 'simulate'>('overview')
   const [userState, setUserState] = useState('US_OTHER')
 
   useEffect(() => {
@@ -215,57 +211,14 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Tab nav for middle panels */}
-        <div className="flex gap-1 bg-[#0e1421] border border-[#1e2d45] rounded-lg p-1 w-fit">
-          {[
-            { id: 'overview', label: 'Exposure Breakdown' },
-            { id: 'graph',    label: 'Attack Surface' },
-            { id: 'simulate', label: 'Mitigation Simulator' },
-          ].map(t => (
-            <button
-              key={t.id}
-              onClick={() => setActiveTab(t.id as any)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === t.id ? 'bg-[#1e2d45] text-white' : 'text-gray-500 hover:text-gray-300'}`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Content panels */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-          {activeTab === 'overview' && (
-            <>
-              <div className="lg:col-span-2 gs-card p-5">
-                <div className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-[#4cc9f0]" /> Risk Dimensions
-                </div>
-                <RadarChart dimensions={scoreBundle.dimensions} />
-              </div>
-              <div className="lg:col-span-3 gs-card p-5">
-                <div className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-[#00ff9d]" /> Exposure Timeline
-                </div>
-                <TimelineChart breaches={breaches} />
-              </div>
-            </>
-          )}
-
-          {activeTab === 'graph' && (
-            <div className="lg:col-span-5 gs-card p-5" style={{ minHeight: 420 }}>
-              <div className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-                <Eye className="w-4 h-4 text-[#4cc9f0]" /> Attack Surface Map
-              </div>
-              <AttackGraph graphData={result.graphData} />
+        {/* Mitigation Simulator */}
+        <div className="grid grid-cols-1 gap-4">
+          <div className="gs-card p-4">
+            <div className="text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
+              <Zap className="w-4 h-4 text-[#4cc9f0]" /> Mitigation Simulator
             </div>
-          )}
-
-          {activeTab === 'simulate' && (
-            <div className="lg:col-span-5">
-              <MitigationSimulator baseline={scoreBundle} hygiene={result.hygiene} />
-            </div>
-          )}
-
+            <MitigationSimulator baseline={scoreBundle} hygiene={result.hygiene} />
+          </div>
         </div>
 
         {/* Legal actions row */}
